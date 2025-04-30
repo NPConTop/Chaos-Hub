@@ -261,4 +261,142 @@ player.Idled:Connect(function()
 	vu:Button1Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 end)
 
+-- ESP Functions
+local function createESP(part, text, color)
+	local billboard = Instance.new("BillboardGui")
+	billboard.Name = "ChaosESP"
+	billboard.Adornee = part
+	billboard.Size = UDim2.new(0, 100, 0, 40)
+	billboard.AlwaysOnTop = true
+
+	local label = Instance.new("TextLabel", billboard)
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = color
+	label.TextScaled = true
+	label.Font = Enum.Font.SourceSansBold
+
+	billboard.Parent = part
+end
+
+local function toggleFruitESP(state)
+	for _, obj in pairs(workspace:GetDescendants()) do
+		if obj:IsA("Tool") and obj:FindFirstChild("Handle") then
+			if state then
+				if not obj.Handle:FindFirstChild("ChaosESP") then
+					createESP(obj.Handle, obj.Name, Color3.fromRGB(255, 85, 0))
+				end
+			else
+				local esp = obj.Handle:FindFirstChild("ChaosESP")
+				if esp then esp:Destroy() end
+			end
+		end
+	end
+end
+
+local function toggleIslandESP(state)
+	for _, island in pairs(workspace:GetChildren()) do
+		if island:IsA("Model") and island:FindFirstChildWhichIsA("BasePart") and island.Name:match("Island") then
+			local part = island:FindFirstChildWhichIsA("BasePart")
+			if state then
+				if not part:FindFirstChild("ChaosESP") then
+					createESP(part, island.Name, Color3.fromRGB(0, 255, 170))
+				end
+			else
+				local esp = part:FindFirstChild("ChaosESP")
+				if esp then esp:Destroy() end
+			end
+		end
+	end
+end
+
+local function togglePlayerESP(state)
+	for _, plr in pairs(game.Players:GetPlayers()) do
+		if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+			local hrp = plr.Character.HumanoidRootPart
+			if state then
+				if not hrp:FindFirstChild("ChaosESP") then
+					createESP(hrp, plr.Name, Color3.fromRGB(85, 170, 255))
+				end
+			else
+				local esp = hrp:FindFirstChild("ChaosESP")
+				if esp then esp:Destroy() end
+			end
+		end
+	end
+end
+
+local function toggleHealthESP(state)
+	for _, plr in pairs(game.Players:GetPlayers()) do
+		if plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("HumanoidRootPart") then
+			local hum = plr.Character.Humanoid
+			local hrp = plr.Character.HumanoidRootPart
+			if state then
+				if not hrp:FindFirstChild("ChaosESP") then
+					createESP(hrp, "HP: " .. math.floor(hum.Health), Color3.fromRGB(255, 0, 127))
+				end
+			else
+				local esp = hrp:FindFirstChild("ChaosESP")
+				if esp then esp:Destroy() end
+			end
+		end
+	end
+end
+
+-- === Add to MISC TAB ===
+local fruitESP = false
+local fruitBtn = Instance.new("TextButton")
+fruitBtn.Size = UDim2.new(0, 150, 0, 30)
+fruitBtn.Position = UDim2.new(0, 10, 0, 130)
+fruitBtn.Text = "Fruit ESP: OFF"
+fruitBtn.BackgroundColor3 = Color3.fromRGB(85, 0, 0)
+fruitBtn.TextColor3 = Color3.new(1, 1, 1)
+fruitBtn.Parent = miscTab
+
+fruitBtn.MouseButton1Click:Connect(function()
+	fruitESP = not fruitESP
+	fruitBtn.Text = "Fruit ESP: " .. (fruitESP and "ON" or "OFF")
+	toggleFruitESP(fruitESP)
+end)
+
+local islandESP = false
+local islandBtn = fruitBtn:Clone()
+islandBtn.Position = UDim2.new(0, 10, 0, 170)
+islandBtn.Text = "Island ESP: OFF"
+islandBtn.BackgroundColor3 = Color3.fromRGB(0, 85, 85)
+islandBtn.Parent = miscTab
+
+islandBtn.MouseButton1Click:Connect(function()
+	islandESP = not islandESP
+	islandBtn.Text = "Island ESP: " .. (islandESP and "ON" or "OFF")
+	toggleIslandESP(islandESP)
+end)
+
+local playerESP = false
+local playerBtn = fruitBtn:Clone()
+playerBtn.Position = UDim2.new(0, 10, 0, 210)
+playerBtn.Text = "Player ESP: OFF"
+playerBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 85)
+playerBtn.Parent = miscTab
+
+playerBtn.MouseButton1Click:Connect(function()
+	playerESP = not playerESP
+	playerBtn.Text = "Player ESP: " .. (playerESP and "ON" or "OFF")
+	togglePlayerESP(playerESP)
+end)
+
+local healthESP = false
+local healthBtn = fruitBtn:Clone()
+healthBtn.Position = UDim2.new(0, 10, 0, 250)
+healthBtn.Text = "Health ESP: OFF"
+healthBtn.BackgroundColor3 = Color3.fromRGB(85, 0, 85)
+healthBtn.Parent = miscTab
+
+healthBtn.MouseButton1Click:Connect(function()
+	healthESP = not healthESP
+	healthBtn.Text = "Health ESP: " .. (healthESP and "ON" or "OFF")
+	toggleHealthESP(healthESP)
+end)
+
 print("Chaos Hub GUI Loaded Successfully")
