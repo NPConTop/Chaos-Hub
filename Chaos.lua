@@ -235,9 +235,3 @@ do
 end
 
 print("Chaos Hub v2.0 Loaded!")```
-
-**Cara pakai:**  
-1. Upload ini ke `Chaos.lua` di GitHub-mu.  
-2. Jalankan loader-mu:
-```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/main/Loader.lua"))()
