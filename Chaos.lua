@@ -1,175 +1,259 @@
--- Chaos Hub v2.1 - Classic UI Style with Full Features
+-- Chaos Hub - Full Version with Complete Tabs (Main, Auto, Teleport, Misc)
 local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
 local VirtualInput = game:GetService("VirtualInputManager")
 local VirtualUser = game:GetService("VirtualUser")
 local player = Players.LocalPlayer
 
--- Anti-AFK
-for _, v in pairs(getconnections(player.Idled)) do
-    v:Disable()
-end
+-- Anti AFK
+for _, c in pairs(getconnections(player.Idled)) do c:Disable() end
 player.Idled:Connect(function()
-    VirtualUser:Button1Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+	VirtualUser:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
 end)
 
--- Create GUI
+-- GUI Base
 local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "ChaosHubClassic"
+gui.Name = "ChaosHub"
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 500, 0, 300)
-frame.Position = UDim2.new(0.5, -250, 0.5, -150)
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-frame.Active = true
-frame.Draggable = true
+local mainFrame = Instance.new("Frame", gui)
+mainFrame.Size = UDim2.new(0, 600, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+mainFrame.Active = true
+mainFrame.Draggable = true
 
-local tabs = {"Main", "Auto", "Teleport", "Misc"}
-local tabButtons = {}
+-- Menu Toggle
+local menuBtn = Instance.new("TextButton", gui)
+menuBtn.Size = UDim2.new(0, 100, 0, 30)
+menuBtn.Position = UDim2.new(0, 20, 0, 20)
+menuBtn.Text = "Chaos Menu"
+menuBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+menuBtn.TextColor3 = Color3.new(1, 1, 1)
+
+menuBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = not mainFrame.Visible
+end)
+
+-- Tabs
+local tabNames = {"Main", "Auto", "Teleport", "Misc"}
 local contentFrames = {}
 
-local tabBar = Instance.new("Frame", frame)
+local tabBar = Instance.new("Frame", mainFrame)
 tabBar.Size = UDim2.new(1, 0, 0, 30)
-tabBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+tabBar.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
 
-for i, name in ipairs(tabs) do
-    local btn = Instance.new("TextButton", tabBar)
-    btn.Size = UDim2.new(0, 120, 1, 0)
-    btn.Position = UDim2.new(0, (i - 1) * 120, 0, 0)
-    btn.Text = name
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    tabButtons[name] = btn
+local line = Instance.new("Frame", mainFrame)
+line.Size = UDim2.new(1, 0, 0, 2)
+line.Position = UDim2.new(0, 0, 0, 30)
+line.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
-    local content = Instance.new("Frame", frame)
-    content.Size = UDim2.new(1, 0, 1, -30)
-    content.Position = UDim2.new(0, 0, 0, 30)
-    content.Visible = (i == 1)
-    content.BackgroundTransparency = 1
-    contentFrames[name] = content
+for i, name in ipairs(tabNames) do
+	local tabBtn = Instance.new("TextButton", tabBar)
+	tabBtn.Size = UDim2.new(0, 150, 0, 30)
+	tabBtn.Position = UDim2.new(0, (i - 1) * 150, 0, 0)
+	tabBtn.Text = name
+	tabBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+	tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-    btn.MouseButton1Click:Connect(function()
-        for _, f in pairs(contentFrames) do f.Visible = false end
-        content.Visible = true
-    end)
+	local content = Instance.new("Frame", mainFrame)
+	content.Size = UDim2.new(1, 0, 1, -32)
+	content.Position = UDim2.new(0, 0, 0, 32)
+	content.BackgroundTransparency = 1
+	content.Visible = (i == 1)
+	contentFrames[name] = content
+
+	tabBtn.MouseButton1Click:Connect(function()
+		for _, f in pairs(contentFrames) do f.Visible = false end
+		content.Visible = true
+	end)
 end
 
--- MAIN: Auto Farm NPC by Island
+-- Main Tab
 do
-    local frame = contentFrames["Main"]
-    local label = Instance.new("TextLabel", frame)
-    label.Text = "Auto Farm NPC by Island"
-    label.Size = UDim2.new(1, 0, 0, 30)
-    label.TextColor3 = Color3.new(1, 1, 1)
-    label.BackgroundTransparency = 1
+	local mainTab = contentFrames["Main"]
+	local title = Instance.new("TextLabel", mainTab)
+	title.Size = UDim2.new(1, 0, 0, 30)
+	title.Text = "Auto Farm - Select Target"
+	title.BackgroundTransparency = 1
+	title.TextColor3 = Color3.new(1, 1, 1)
 
-    local npcDropdown = Instance.new("TextButton", frame)
-    npcDropdown.Text = "Select NPC"
-    npcDropdown.Position = UDim2.new(0, 20, 0, 40)
-    npcDropdown.Size = UDim2.new(0, 200, 0, 30)
-    npcDropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-    npcDropdown.TextColor3 = Color3.new(1, 1, 1)
+	local mobList = {}
+	local selMob, selWeapon = nil, nil
 
-    local refreshBtn = Instance.new("TextButton", frame)
-    refreshBtn.Text = "Refresh"
-    refreshBtn.Position = UDim2.new(0, 230, 0, 40)
-    refreshBtn.Size = UDim2.new(0, 100, 0, 30)
-    refreshBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    refreshBtn.TextColor3 = Color3.new(1, 1, 1)
+	local mobBtn = Instance.new("TextButton", mainTab)
+	mobBtn.Size = UDim2.new(0, 200, 0, 30)
+	mobBtn.Position = UDim2.new(0, 10, 0, 40)
+	mobBtn.Text = "Refresh NPC"
+	mobBtn.MouseButton1Click:Connect(function()
+		mobList = {}
+		for _, v in pairs(workspace:GetDescendants()) do
+			if v:IsA("Model") and v:FindFirstChild("Humanoid") and not table.find(mobList, v.Name) then
+				table.insert(mobList, v.Name)
+			end
+		end
+	end)
+
+	local dropMob = Instance.new("TextButton", mainTab)
+	dropMob.Size = UDim2.new(0, 200, 0, 30)
+	dropMob.Position = UDim2.new(0, 10, 0, 80)
+	dropMob.Text = "Select Mob"
+	dropMob.MouseButton1Click:Connect(function()
+		if #mobList > 0 then
+			selMob = mobList[1]
+			dropMob.Text = selMob
+		end
+	end)
+
+	local dropWeapon = Instance.new("TextButton", mainTab)
+	dropWeapon.Size = UDim2.new(0, 200, 0, 30)
+	dropWeapon.Position = UDim2.new(0, 10, 0, 120)
+	dropWeapon.Text = "Select Weapon"
+	dropWeapon.MouseButton1Click:Connect(function()
+		for _, tool in pairs(player.Backpack:GetChildren()) do
+			if tool:IsA("Tool") then
+				selWeapon = tool.Name
+				dropWeapon.Text = selWeapon
+				break
+			end
+		end
+	end)
+
+	local autoFarm = false
+	local toggleAF = Instance.new("TextButton", mainTab)
+	toggleAF.Size = UDim2.new(0, 150, 0, 30)
+	toggleAF.Position = UDim2.new(0, 10, 0, 160)
+	toggleAF.Text = "Auto Farm: OFF"
+	toggleAF.MouseButton1Click:Connect(function()
+		autoFarm = not autoFarm
+		toggleAF.Text = "Auto Farm: " .. (autoFarm and "ON" or "OFF")
+		task.spawn(function()
+			while autoFarm do
+				if selMob and selWeapon then
+					local mob = workspace:FindFirstChild(selMob)
+					local char = player.Character
+					if mob and mob:FindFirstChild("HumanoidRootPart") and char then
+						local tool = player.Backpack:FindFirstChild(selWeapon)
+						if tool then tool.Parent = char end
+						char.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame * CFrame.new(0, 0, -5)
+						VirtualInput:SendKeyEvent(true, Enum.KeyCode.Z, false, game)
+						wait(0.1)
+						VirtualInput:SendKeyEvent(false, Enum.KeyCode.Z, false, game)
+					end
+				end
+				wait(0.3)
+			end
+		end)
+	end)
 end
 
--- AUTO: Auto Skill
+-- Auto Tab
 do
-    local frame = contentFrames["Auto"]
-    local autoBtn = Instance.new("TextButton", frame)
-    autoBtn.Text = "Auto Skill Z"
-    autoBtn.Position = UDim2.new(0, 20, 0, 20)
-    autoBtn.Size = UDim2.new(0, 150, 0, 30)
-    autoBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    autoBtn.TextColor3 = Color3.new(1, 1, 1)
+	local autoTab = contentFrames["Auto"]
+	local delayBox = Instance.new("TextBox", autoTab)
+	delayBox.Size = UDim2.new(0, 50, 0, 30)
+	delayBox.Position = UDim2.new(0, 10, 0, 10)
+	delayBox.Text = "0.1"
+	delayBox.PlaceholderText = "Delay"
 
-    local auto = false
-    autoBtn.MouseButton1Click:Connect(function()
-        auto = not auto
-        autoBtn.Text = "Auto Skill Z: " .. (auto and "ON" or "OFF")
-        if auto then
-            spawn(function()
-                while auto do
-                    VirtualInput:SendKeyEvent(true, Enum.KeyCode.Z, false, game)
-                    wait(0.1)
-                    VirtualInput:SendKeyEvent(false, Enum.KeyCode.Z, false, game)
-                    wait(1)
-                end
-            end)
-        end
-    end)
+	local autoClick = false
+	local btn = Instance.new("TextButton", autoTab)
+	btn.Size = UDim2.new(0, 150, 0, 30)
+	btn.Position = UDim2.new(0, 70, 0, 10)
+	btn.Text = "Auto Click: OFF"
+	btn.MouseButton1Click:Connect(function()
+		autoClick = not autoClick
+		btn.Text = "Auto Click: " .. (autoClick and "ON" or "OFF")
+		task.spawn(function()
+			while autoClick do
+				VirtualInput:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+				VirtualInput:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+				wait(tonumber(delayBox.Text) or 0.1)
+			end
+		end)
+	end)
+
+	local keys = {"Z", "X", "C", "V"}
+	for i, key in ipairs(keys) do
+		local btn = Instance.new("TextButton", autoTab)
+		btn.Size = UDim2.new(0, 100, 0, 30)
+		btn.Position = UDim2.new(0, 10 + (i - 1) * 110, 0, 60)
+		btn.Text = "Auto " .. key .. ": OFF"
+		local active = false
+		btn.MouseButton1Click:Connect(function()
+			active = not active
+			btn.Text = "Auto " .. key .. ": " .. (active and "ON" or "OFF")
+			task.spawn(function()
+				while active do
+					VirtualInput:SendKeyEvent(true, Enum.KeyCode[key], false, game)
+					VirtualInput:SendKeyEvent(false, Enum.KeyCode[key], false, game)
+					wait(tonumber(delayBox.Text) or 1)
+				end
+			end)
+		end)
+	end
 end
 
--- TELEPORT
+-- Teleport Tab
 do
-    local frame = contentFrames["Teleport"]
-    local islands = {
-        ["Starter Island"] = Vector3.new(3387, 138, 1716),
-        ["Clown Island"] = Vector3.new(3002, 144, -585),
-        ["Marine Island"] = Vector3.new(4930, 140, 35),
-        ["Lier Village"] = Vector3.new(5795, 177, 2330),
-        ["Baratee"] = Vector3.new(1422, 124, 2525),
-        ["Ar Longo Park"] = Vector3.new(466, 144, 526),
-        ["Lulue Town"] = Vector3.new(5786, 125, -3228),
-        ["Arena"] = Vector3.new(1319, 130, -808)
-    }
-
-    local y = 10
-    for name, pos in pairs(islands) do
-        local btn = Instance.new("TextButton", frame)
-        btn.Text = name
-        btn.Position = UDim2.new(0, 20, 0, y)
-        btn.Size = UDim2.new(0, 200, 0, 30)
-        btn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-        btn.TextColor3 = Color3.new(1, 1, 1)
-        y = y + 35
-
-        btn.MouseButton1Click:Connect(function()
-            player.Character:MoveTo(pos)
-        end)
-    end
+	local tpTab = contentFrames["Teleport"]
+	local sea2Id = 13155198714
+	local currentPlace = game.PlaceId
+	local tpData = {
+		["Starter Island"] = Vector3.new(3387, 138, 1716),
+		["Clown Island"] = Vector3.new(3002, 144, -585),
+		["Marine Island"] = Vector3.new(4930, 140, 35),
+		["Lier Village"] = Vector3.new(5795, 177, 2330),
+		["Baratee"] = Vector3.new(1422, 124, 2525),
+		["Ar Longo Park"] = Vector3.new(466, 144, 526),
+		["Lulue Town"] = Vector3.new(5786, 125, -3228),
+		["Arena"] = Vector3.new(1319, 130, -808)
+	}
+	local row = 0
+	if currentPlace ~= sea2Id then
+		for name, pos in pairs(tpData) do
+			local btn = Instance.new("TextButton", tpTab)
+			btn.Size = UDim2.new(0, 180, 0, 25)
+			btn.Position = UDim2.new(0, 10 + (row % 2) * 190, 0, 10 + math.floor(row / 2) * 30)
+			btn.Text = name
+			btn.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
+			btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+			btn.MouseButton1Click:Connect(function()
+				player.Character.HumanoidRootPart.CFrame = CFrame.new(pos)
+			end)
+			row += 1
+		end
+	end
 end
 
--- MISC
+-- Misc Tab
 do
-    local frame = contentFrames["Misc"]
+	local miscTab = contentFrames["Misc"]
+	local function createBtn(text, y, callback)
+		local btn = Instance.new("TextButton", miscTab)
+		btn.Size = UDim2.new(0, 200, 0, 30)
+		btn.Position = UDim2.new(0, 10, 0, y)
+		btn.Text = text
+		btn.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.MouseButton1Click:Connect(callback)
+	end
 
-    local function createBtn(text, posY, callback)
-        local b = Instance.new("TextButton", frame)
-        b.Text = text
-        b.Position = UDim2.new(0, 20, 0, posY)
-        b.Size = UDim2.new(0, 200, 0, 30)
-        b.BackgroundColor3 = Color3.fromRGB(50, 70, 50)
-        b.TextColor3 = Color3.new(1, 1, 1)
-        b.MouseButton1Click:Connect(callback)
-    end
+	createBtn("Rejoin Server", 10, function()
+		TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, player)
+	end)
 
-    createBtn("Gacha Fruit", 20, function()
-        local g = workspace:FindFirstChild("Gacha")
-        if g and g:FindFirstChild("ProximityPrompt") then
-            fireproximityprompt(g.ProximityPrompt)
-        else
-            warn("Gacha not found")
-        end
-    end)
+	createBtn("Gacha Fruit", 50, function()
+		local g = workspace:FindFirstChild("Gacha")
+		if g and g:FindFirstChild("ProximityPrompt") then
+			fireproximityprompt(g.ProximityPrompt)
+		end
+	end)
 
-    createBtn("Check Stock Fruit", 60, function()
-        local gui = player:WaitForChild("PlayerGui")
-        local stk = gui:FindFirstChild("Main") and gui.Main:FindFirstChild("Topbar") and gui.Main.Topbar:FindFirstChild("Stock")
-        if stk then
-            stk:Click()
-        else
-            warn("Stock UI not found")
-        end
-    end)
-
-    createBtn("Rejoin Server", 100, function()
-        game:GetService("TeleportService"):Teleport(game.PlaceId)
-    end)
+	createBtn("Check Fruit Stock", 90, function()
+		local gui = player:WaitForChild("PlayerGui")
+		local stock = gui:FindFirstChild("Main") and gui.Main:FindFirstChild("Topbar") and gui.Main.Topbar:FindFirstChild("Stock")
+		if stock then stock:Click() end
+	end)
 end
 
-print("Chaos Hub Classic v2.1 Loaded")
+print("Chaos Hub Fully Loaded!")
