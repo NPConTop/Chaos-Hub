@@ -1,4 +1,5 @@
--- Chaos Hub - Versi Final Elegan print("Chaos Hub Loaded")
+-- Chaos Hub - Versi Final Elegan 
+print("Chaos Hub Loaded")
 
 -- Services local Players = game:GetService("Players") local player = Players.LocalPlayer local character = player.Character or player.CharacterAdded:Wait() local vim = game:GetService("VirtualInputManager") local vu = game:GetService("VirtualUser")
 
