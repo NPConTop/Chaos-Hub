@@ -1,4 +1,5 @@
--- Chaos Hub - Stable Cast Version
+
+-- Chaos Hub - Optimized Combo Version by NPC
 print("Chaos Hub Loaded")
 
 -- Services
@@ -7,6 +8,8 @@ local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local vim = game:GetService("VirtualInputManager")
 local vu = game:GetService("VirtualUser")
+local TeleportService = game:GetService("TeleportService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- GUI Base
 local gui = Instance.new("ScreenGui")
@@ -25,8 +28,8 @@ menuBtn.Parent = gui
 
 -- Main Frame
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 500, 0, 350)
-mainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
+mainFrame.Size = UDim2.new(0, 500, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
 mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
 mainFrame.Visible = true
 mainFrame.Active = true
@@ -38,7 +41,7 @@ menuBtn.MouseButton1Click:Connect(function()
 end)
 
 -- Tabs
-local tabList = {"Main", "Auto", "Teleport"}
+local tabList = {"Main", "Auto", "Teleport", "Misc"}
 local tabs, contentFrames = {}, {}
 
 for i, name in ipairs(tabList) do
@@ -50,9 +53,17 @@ for i, name in ipairs(tabList) do
 	tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 	tabBtn.Parent = mainFrame
 
+	local line = Instance.new("Frame")
+	line.Size = UDim2.new(0, 100, 0, 2)
+	line.Position = UDim2.new(0, (i - 1) * 100, 0, 30)
+	line.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	line.Visible = (i == 1)
+	line.Name = "ActiveLine"
+	line.Parent = mainFrame
+
 	local content = Instance.new("Frame")
-	content.Size = UDim2.new(1, 0, 1, -30)
-	content.Position = UDim2.new(0, 0, 0, 30)
+	content.Size = UDim2.new(1, 0, 1, -32)
+	content.Position = UDim2.new(0, 0, 0, 32)
 	content.BackgroundTransparency = 1
 	content.Visible = (i == 1)
 	content.Parent = mainFrame
@@ -61,8 +72,14 @@ for i, name in ipairs(tabList) do
 	tabs[name] = tabBtn
 
 	tabBtn.MouseButton1Click:Connect(function()
-		for _, f in pairs(contentFrames) do f.Visible = false end
+		for j, f in pairs(contentFrames) do f.Visible = false end
+		for _, l in pairs(mainFrame:GetChildren()) do
+			if l:IsA("Frame") and l.Name == "ActiveLine" then
+				l.Visible = false
+			end
+		end
 		content.Visible = true
+		line.Visible = true
 	end)
 end
 
@@ -70,7 +87,6 @@ end
 local autoTab = contentFrames["Auto"]
 local autoClick = false
 
--- Delay Input
 local delayBox = Instance.new("TextBox")
 delayBox.Size = UDim2.new(0, 50, 0, 30)
 delayBox.Position = UDim2.new(0, 10, 0, 10)
@@ -80,46 +96,42 @@ delayBox.TextColor3 = Color3.new(1, 1, 1)
 delayBox.PlaceholderText = "Delay"
 delayBox.Parent = autoTab
 
--- Auto Click Button
+-- Auto Click
 local autoClickBtn = Instance.new("TextButton")
 autoClickBtn.Size = UDim2.new(0, 150, 0, 30)
 autoClickBtn.Position = UDim2.new(0, 70, 0, 10)
-autoClickBtn.Text = "Auto Click: OFF"
+autoClickBtn.Text = "Auto Click"
 autoClickBtn.BackgroundColor3 = Color3.fromRGB(70, 50, 50)
 autoClickBtn.TextColor3 = Color3.new(1, 1, 1)
 autoClickBtn.Parent = autoTab
 
 autoClickBtn.MouseButton1Click:Connect(function()
 	autoClick = not autoClick
-	autoClickBtn.Text = "Auto Click: " .. (autoClick and "ON" or "OFF")
 	task.spawn(function()
 		while autoClick do
-			vu:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+			vim:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+			vim:SendMouseButtonEvent(0, 0, 0, false, game, 0)
 			wait(tonumber(delayBox.Text) or 0.1)
 		end
 	end)
 end)
 
--- Skill Cast Buttons (Z/X/C/V)
-local skillKeys = {
-	{Key = Enum.KeyCode.Z, Label = "Cast Z"},
-	{Key = Enum.KeyCode.X, Label = "Cast X"},
-	{Key = Enum.KeyCode.C, Label = "Cast C"},
-	{Key = Enum.KeyCode.V, Label = "Cast V"}
-}
-
-for i, skill in ipairs(skillKeys) do
+-- Auto Skill
+local skillKeys = {"Z", "X", "C", "V"}
+for i, key in ipairs(skillKeys) do
 	local btn = Instance.new("TextButton")
 	btn.Size = UDim2.new(0, 100, 0, 30)
 	btn.Position = UDim2.new(0, 10 + (i - 1) * 110, 0, 60)
-	btn.Text = skill.Label
+	btn.Text = key
 	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
 	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
 	btn.Parent = autoTab
 
 	btn.MouseButton1Click:Connect(function()
-		vim:SendKeyEvent(true, skill.Key, false, game)
-		vim:SendKeyEvent(false, skill.Key, false, game)
+		task.spawn(function()
+			vim:SendKeyEvent(true, key, false, game)
+			vim:SendKeyEvent(false, key, false, game)
+		end)
 	end)
 end
 
@@ -134,7 +146,7 @@ local teleportPoints = {
 	["Ar Longo Park"] = Vector3.new(466, 144, 526),
 	["Lulue Town"] = Vector3.new(5786, 125, -3228),
 	["Arena"] = Vector3.new(1319, 130, -808),
-	["Jungle Island"] = Vector3.new(0, 0, 0) -- placeholder
+	["Jungle Island"] = Vector3.new(0, 0, 0)
 }
 
 local row = 0
@@ -151,6 +163,59 @@ for name, pos in pairs(teleportPoints) do
 	end)
 	row += 1
 end
+
+-- Misc Tab
+local miscTab = contentFrames["Misc"]
+
+local function createMiscButton(text, yPos, onClick)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(0, 200, 0, 30)
+	btn.Position = UDim2.new(0, 10, 0, yPos)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(50, 70, 90)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 14
+	btn.Parent = miscTab
+	btn.MouseButton1Click:Connect(onClick)
+end
+
+createMiscButton("Rejoin Server", 10, function()
+	TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
+end)
+
+createMiscButton("Check Stock Fruit", 50, function()
+	for _, obj in pairs(ReplicatedStorage:GetDescendants()) do
+		if obj:IsA("RemoteEvent") and obj.Name:lower():find("stock") then
+			obj:FireServer()
+			break
+		end
+	end
+end)
+
+createMiscButton("Gacha Random Fruit", 90, function()
+	for _, obj in pairs(ReplicatedStorage:GetDescendants()) do
+		if obj:IsA("RemoteEvent") and obj.Name:lower():find("buy") then
+			obj:FireServer()
+			break
+		end
+	end
+end)
+
+createMiscButton("List All RemoteEvent", 130, function()
+	print("==== RemoteEvent di Workspace ====")
+	for _, obj in pairs(workspace:GetDescendants()) do
+		if obj:IsA("RemoteEvent") then
+			print("workspace:", obj:GetFullName())
+		end
+	end
+	print("==== RemoteEvent di ReplicatedStorage ====")
+	for _, obj in pairs(ReplicatedStorage:GetDescendants()) do
+		if obj:IsA("RemoteEvent") then
+			print("replicated:", obj:GetFullName())
+		end
+	end
+end)
 
 -- Anti AFK
 for _, conn in pairs(getconnections(player.Idled)) do
