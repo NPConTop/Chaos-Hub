@@ -1,6 +1,7 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 
 -- GUI Setup
@@ -10,7 +11,7 @@ gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 420, 0, 240)
+frame.Size = UDim2.new(0, 420, 0, 230)
 frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -18,26 +19,53 @@ frame.BackgroundTransparency = 1
 frame.BorderSizePixel = 0
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
+-- RGB Border (glow effect)
+local border = Instance.new("UIStroke", frame)
+border.Thickness = 3
+border.Transparency = 0
+border.LineJoinMode = Enum.LineJoinMode.Round
+
+local hue = 0
+RunService.RenderStepped:Connect(function()
+	hue = (hue + 0.01) % 1
+	border.Color = ColorSequence.new(Color3.fromHSV(hue, 1, 1))
+end)
+
+-- Title
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 10)
 title.BackgroundTransparency = 1
-title.Text = ""
+title.Text = "CHAOS MULTI LOADER"
 title.Font = Enum.Font.FredokaOne
 title.TextSize = 28
 title.TextColor3 = Color3.fromRGB(255, 70, 70)
-title.TextTransparency = 0
+title.TextTransparency = 1
 
--- Typing Animation
-local function typeText(text)
-	title.Text = ""
-	for i = 1, #text do
-		title.Text = string.sub(text, 1, i)
-		task.wait(0.05)
-	end
-end
+-- Status Text
+local statusText = Instance.new("TextLabel", frame)
+statusText.Size = UDim2.new(1, 0, 0, 20)
+statusText.Position = UDim2.new(0, 0, 1, -25)
+statusText.BackgroundTransparency = 1
+statusText.Text = ""
+statusText.Font = Enum.Font.Gotham
+statusText.TextSize = 14
+statusText.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Button creator
+-- Supported Games Label
+local supportedLabel = Instance.new("TextLabel", frame)
+supportedLabel.Size = UDim2.new(1, -40, 0, 40)
+supportedLabel.Position = UDim2.new(0, 20, 0, 40)
+supportedLabel.BackgroundTransparency = 1
+supportedLabel.Font = Enum.Font.Gotham
+supportedLabel.TextSize = 14
+supportedLabel.TextColor3 = Color3.fromRGB(150, 150, 255)
+supportedLabel.TextWrapped = true
+supportedLabel.TextXAlignment = Enum.TextXAlignment.Left
+supportedLabel.TextYAlignment = Enum.TextYAlignment.Top
+supportedLabel.Text = "Supported Games:\n- One Fruit Simulator\n- Rebirth Champions Ultra\n- Arise Crossover\n- Bubble Gum Simulator Infinity\n- Verse Piece\n- Blue Lock: Rivals [Buggy]"
+
+-- Function to create buttons
 local function createButton(name, posY, callback)
 	local btn = Instance.new("TextButton", frame)
 	btn.Size = UDim2.new(0.8, 0, 0, 35)
@@ -50,64 +78,47 @@ local function createButton(name, posY, callback)
 	btn.AutoButtonColor = true
 	btn.Visible = false
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-	btn.MouseButton1Click:Connect(callback)
+	btn.MouseButton1Click:Connect(function()
+		statusText.Text = "LOADER IS RUNNING..."
+		callback()
+		statusText.Text = ""
+		gui:Destroy()
+	end)
 	return btn
 end
 
 -- Buttons
-local nexusBtn = createButton("Load Nexus", 60, function()
+local nexusBtn = createButton("Load Nexus", 90, function()
 	loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()
-	gui:Destroy()
 end)
 
-local chaosBtn = createButton("Load Chaos Hub", 100, function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/YourUser/YourRepo/main/chaos.lua"))()
-	gui:Destroy()
+local chaosBtn = createButton("Load Chaos Hub", 135, function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/refs/heads/main/ChaosLoaderScript"))()
 end)
 
-local otherBtn = createButton("Load Custom Script", 140, function()
+local otherBtn = createButton("Load Custom Script", 180, function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/YourUser/YourRepo/main/otherscript.lua"))()
-	gui:Destroy()
 end)
 
-local viewBtn = createButton("Show Nexus Script", 180, function()
-	local scriptPopup = Instance.new("TextBox", gui)
-	scriptPopup.Size = UDim2.new(0, 500, 0, 300)
-	scriptPopup.Position = UDim2.new(0.5, 0, 0.5, 0)
-	scriptPopup.AnchorPoint = Vector2.new(0.5, 0.5)
-	scriptPopup.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	scriptPopup.TextColor3 = Color3.fromRGB(0, 255, 100)
-	scriptPopup.ClearTextOnFocus = false
-	scriptPopup.TextSize = 14
-	scriptPopup.Font = Enum.Font.Code
-	scriptPopup.TextWrapped = false
-	scriptPopup.TextXAlignment = Enum.TextXAlignment.Left
-	scriptPopup.TextYAlignment = Enum.TextYAlignment.Top
-	scriptPopup.TextEditable = false
-	scriptPopup.Text = "Loading..."
-	Instance.new("UICorner", scriptPopup).CornerRadius = UDim.new(0, 6)
-
-	coroutine.wrap(function()
-		local success, result = pcall(function()
-			return game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua")
-		end)
-		scriptPopup.Text = success and result or "Failed to load script."
-	end)()
-end)
-
--- Start Animation
+-- Loader enter animation
 TweenService:Create(frame, TweenInfo.new(0.6), {BackgroundTransparency = 0.1}):Play()
+TweenService:Create(title, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
 
--- Typing + sound
-typeText("SCRIPT IS RUNNING...")
+task.wait(0.7)
+
+-- Music
 local sound = Instance.new("Sound", SoundService)
 sound.SoundId = "rbxassetid://9118823107"
 sound.Volume = 2
 sound:Play()
 
--- Reveal buttons after typing
-task.wait(1)
-for _, btn in pairs({nexusBtn, chaosBtn, otherBtn, viewBtn}) do
-	task.wait(0.2)
+-- Show buttons one by one
+for _, btn in pairs({nexusBtn, chaosBtn, otherBtn}) do
+	task.wait(0.3)
 	btn.Visible = true
 end
+
+-- Final loader status
+statusText.Text = "LOADER HAS BEEN RUN"
+task.wait(1.5)
+statusText.Text = ""
