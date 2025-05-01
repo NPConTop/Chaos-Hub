@@ -108,15 +108,26 @@ local function createButton(name, posY, callback)
 	return btn
 end
 
--- Game Labels & Nexus Button
+-- Game Labels & Buttons
 local ypos = 60
 
 createLabel("One Fruit Simulator", ypos)
 ypos += 25
-local nexusBtn = createButton("Load Nexus Hub", ypos, function()
-	status.Text = "LOADER IS RUNNING..."
+
+local nexusBtn = createButton("Nexus Hub", ypos, function()
+	status.Text = "SCRIPT IS RUNNING..."
 	status.TextTransparency = 0
 	loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()
+	TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+	gui:Destroy()
+end)
+
+ypos += 40
+
+local omgBtn = createButton("OMG Hub", ypos, function()
+	status.Text = "SCRIPT IS RUNNING..."
+	status.TextTransparency = 0
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/omgeternalhub/loader/main/loader.lua"))()
 	TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
 	gui:Destroy()
 end)
@@ -131,5 +142,3 @@ createSeparator(ypos)
 ypos += 10
 
 createLabel("Grow a Garden Tycoon", ypos)
-
--- Optional: Add more games or buttons here
