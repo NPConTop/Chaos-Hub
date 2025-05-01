@@ -51,12 +51,13 @@ title.TextSize = 28
 title.TextColor3 = Color3.fromRGB(255, 70, 70)
 title.TextTransparency = 1
 
--- Status Label
-local status = Instance.new("TextLabel", frame)
-status.Size = UDim2.new(1, 0, 0, 30)
-status.Position = UDim2.new(0, 0, 1, -30)
+-- Status Label (bottom right)
+local status = Instance.new("TextLabel", gui)
+status.Size = UDim2.new(0, 180, 0, 30)
+status.Position = UDim2.new(1, -190, 1, -40)
+status.AnchorPoint = Vector2.new(0, 0)
 status.BackgroundTransparency = 1
-status.Text = "LOADER HAS BEEN RUN"
+status.Text = ""
 status.Font = Enum.Font.GothamBold
 status.TextSize = 16
 status.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -65,7 +66,6 @@ status.TextTransparency = 1
 -- Tween In
 TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundTransparency = 0.1}):Play()
 TweenService:Create(title, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 
 -- Sound
 local sound = Instance.new("Sound", SoundService)
@@ -104,7 +104,13 @@ local function createButton(name, posY, callback)
 	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-	btn.MouseButton1Click:Connect(callback)
+	btn.MouseButton1Click:Connect(function()
+		status.Text = "SCRIPT IS RUNNING..."
+		status.TextTransparency = 0
+		callback()
+		TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+		gui:Destroy()
+	end)
 	return btn
 end
 
@@ -115,21 +121,13 @@ createLabel("One Fruit Simulator", ypos)
 ypos += 25
 
 local nexusBtn = createButton("Nexus Hub", ypos, function()
-	status.Text = "SCRIPT IS RUNNING..."
-	status.TextTransparency = 0
 	loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()
-	TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-	gui:Destroy()
 end)
 
 ypos += 40
 
 local omgBtn = createButton("OMG Hub", ypos, function()
-	status.Text = "SCRIPT IS RUNNING..."
-	status.TextTransparency = 0
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/omgeternalhub/loader/main/loader.lua"))()
-	TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-	gui:Destroy()
 end)
 
 ypos += 40
