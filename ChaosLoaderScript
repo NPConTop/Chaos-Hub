@@ -1,35 +1,44 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 
 -- GUI Setup
 local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "ChaosMultiLoader"
+gui.Name = "ChaosLoader"
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 420, 0, 230)
+frame.Size = UDim2.new(0, 420, 0, 240)
 frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.BackgroundTransparency = 1
+frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- RGB Border (glow effect)
-local border = Instance.new("UIStroke", frame)
-border.Thickness = 3
-border.Transparency = 0
-border.LineJoinMode = Enum.LineJoinMode.Round
-
-local hue = 0
-RunService.RenderStepped:Connect(function()
-	hue = (hue + 0.01) % 1
-	border.Color = ColorSequence.new(Color3.fromHSV(hue, 1, 1))
-end)
+-- Rainbow Borders
+for i = 0, 3 do
+	local border = Instance.new("Frame", frame)
+	border.Name = "RainbowBorder"..i
+	border.BackgroundColor3 = Color3.fromHSV(i/4, 1, 1)
+	border.BorderSizePixel = 0
+	border.ZIndex = 2
+	if i == 0 then
+		border.Size = UDim2.new(1, 0, 0, 2)
+		border.Position = UDim2.new(0, 0, 0, 0)
+	elseif i == 1 then
+		border.Size = UDim2.new(0, 2, 1, 0)
+		border.Position = UDim2.new(0, 0, 0, 0)
+	elseif i == 2 then
+		border.Size = UDim2.new(1, 0, 0, 2)
+		border.Position = UDim2.new(0, 0, 1, -2)
+	elseif i == 3 then
+		border.Size = UDim2.new(0, 2, 1, 0)
+		border.Position = UDim2.new(1, -2, 0, 0)
+	end
+end
 
 -- Title
 local title = Instance.new("TextLabel", frame)
@@ -42,30 +51,49 @@ title.TextSize = 28
 title.TextColor3 = Color3.fromRGB(255, 70, 70)
 title.TextTransparency = 1
 
--- Status Text
-local statusText = Instance.new("TextLabel", frame)
-statusText.Size = UDim2.new(1, 0, 0, 20)
-statusText.Position = UDim2.new(0, 0, 1, -25)
-statusText.BackgroundTransparency = 1
-statusText.Text = ""
-statusText.Font = Enum.Font.Gotham
-statusText.TextSize = 14
-statusText.TextColor3 = Color3.fromRGB(255, 255, 255)
+-- Status Label
+local status = Instance.new("TextLabel", frame)
+status.Size = UDim2.new(1, 0, 0, 30)
+status.Position = UDim2.new(0, 0, 1, -30)
+status.BackgroundTransparency = 1
+status.Text = "LOADER HAS BEEN RUN"
+status.Font = Enum.Font.GothamBold
+status.TextSize = 16
+status.TextColor3 = Color3.fromRGB(255, 255, 255)
+status.TextTransparency = 1
 
--- Supported Games Label
-local supportedLabel = Instance.new("TextLabel", frame)
-supportedLabel.Size = UDim2.new(1, -40, 0, 40)
-supportedLabel.Position = UDim2.new(0, 20, 0, 40)
-supportedLabel.BackgroundTransparency = 1
-supportedLabel.Font = Enum.Font.Gotham
-supportedLabel.TextSize = 14
-supportedLabel.TextColor3 = Color3.fromRGB(150, 150, 255)
-supportedLabel.TextWrapped = true
-supportedLabel.TextXAlignment = Enum.TextXAlignment.Left
-supportedLabel.TextYAlignment = Enum.TextYAlignment.Top
-supportedLabel.Text = "Supported Games:\n- One Fruit Simulator\n- Rebirth Champions Ultra\n- Arise Crossover\n- Bubble Gum Simulator Infinity\n- Verse Piece\n- Blue Lock: Rivals [Buggy]"
+-- Tween In
+TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundTransparency = 0.1}):Play()
+TweenService:Create(title, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
+TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 
--- Function to create buttons
+-- Sound
+local sound = Instance.new("Sound", SoundService)
+sound.SoundId = "rbxassetid://9118823107"
+sound.Volume = 2
+sound:Play()
+
+-- Utility
+local function createLabel(text, posY)
+	local lbl = Instance.new("TextLabel", frame)
+	lbl.Size = UDim2.new(1, -20, 0, 25)
+	lbl.Position = UDim2.new(0, 10, 0, posY)
+	lbl.BackgroundTransparency = 1
+	lbl.Text = text
+	lbl.Font = Enum.Font.GothamBold
+	lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+	lbl.TextSize = 14
+	return lbl
+end
+
+local function createSeparator(posY)
+	local sep = Instance.new("Frame", frame)
+	sep.Size = UDim2.new(0.9, 0, 0, 1)
+	sep.Position = UDim2.new(0.05, 0, 0, posY)
+	sep.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	sep.BorderSizePixel = 0
+end
+
 local function createButton(name, posY, callback)
 	local btn = Instance.new("TextButton", frame)
 	btn.Size = UDim2.new(0.8, 0, 0, 35)
@@ -75,50 +103,33 @@ local function createButton(name, posY, callback)
 	btn.TextSize = 16
 	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.AutoButtonColor = true
-	btn.Visible = false
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-	btn.MouseButton1Click:Connect(function()
-		statusText.Text = "LOADER IS RUNNING..."
-		callback()
-		statusText.Text = ""
-		gui:Destroy()
-	end)
+	btn.MouseButton1Click:Connect(callback)
 	return btn
 end
 
--- Buttons
-local nexusBtn = createButton("Load Nexus", 90, function()
+-- Game Labels & Nexus Button
+local ypos = 60
+
+createLabel("One Fruit Simulator", ypos)
+ypos += 25
+local nexusBtn = createButton("Load Nexus Hub", ypos, function()
+	status.Text = "LOADER IS RUNNING..."
+	status.TextTransparency = 0
 	loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()
+	TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+	gui:Destroy()
 end)
 
-local chaosBtn = createButton("Load Chaos Hub", 135, function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/refs/heads/main/ChaosLoaderScript"))()
-end)
+ypos += 40
+createSeparator(ypos)
+ypos += 10
 
-local otherBtn = createButton("Load Custom Script", 180, function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/YourUser/YourRepo/main/otherscript.lua"))()
-end)
+createLabel("Blox Fruits", ypos)
+ypos += 25
+createSeparator(ypos)
+ypos += 10
 
--- Loader enter animation
-TweenService:Create(frame, TweenInfo.new(0.6), {BackgroundTransparency = 0.1}):Play()
-TweenService:Create(title, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
+createLabel("Grow a Garden Tycoon", ypos)
 
-task.wait(0.7)
-
--- Music
-local sound = Instance.new("Sound", SoundService)
-sound.SoundId = "rbxassetid://9118823107"
-sound.Volume = 2
-sound:Play()
-
--- Show buttons one by one
-for _, btn in pairs({nexusBtn, chaosBtn, otherBtn}) do
-	task.wait(0.3)
-	btn.Visible = true
-end
-
--- Final loader status
-statusText.Text = "LOADER HAS BEEN RUN"
-task.wait(1.5)
-statusText.Text = ""
+-- Optional: Add more games or buttons here
