@@ -5,15 +5,16 @@ local SoundService = game:GetService("SoundService")
 local Lighting = game:GetService("Lighting")
 local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Blur
+-- Blur effect
 local blur = Instance.new("BlurEffect", Lighting)
 blur.Size = 12
 
--- GUI
-local gui = Instance.new("ScreenGui", PlayerGui)
+-- ScreenGui
+local gui = Instance.new("ScreenGui")
 gui.Name = "ChaosLoader"
-gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.Parent = PlayerGui
 
 gui.Destroying:Connect(function()
 	if blur then blur:Destroy() end
@@ -23,7 +24,7 @@ end)
 local frame = Instance.new("Frame", gui)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.Position = UDim2.new(0.5, 0, 1.5, 0)
-frame.Size = UDim2.new(0.4, 0, 0.5, 0)
+frame.Size = UDim2.new(0, 420, 0, 260)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
@@ -37,8 +38,8 @@ rainbow.Thickness = 3
 rainbow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 task.spawn(function()
 	local h = 0
-	while rainbow and rainbow.Parent do
-		rainbow.Color = ColorSequence.new(Color3.fromHSV(h,1,1))
+	while frame and frame.Parent do
+		rainbow.Color = ColorSequence.new(Color3.fromHSV(h, 1, 1))
 		h = (h + 0.01) % 1
 		task.wait(0.03)
 	end
@@ -85,47 +86,12 @@ status.TextSize = 20
 status.TextColor3 = Color3.fromRGB(255,255,255)
 status.BackgroundTransparency = 1
 status.TextTransparency = 1
-
 TweenService:Create(status, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
 task.wait(2.5)
 TweenService:Create(status, TweenInfo.new(0.6), {TextTransparency = 1}):Play()
 task.delay(0.7, function() status:Destroy() end)
 
--- Sound Effect
-local introSound = Instance.new("Sound", SoundService)
-introSound.SoundId = "rbxassetid://9118823107"
-introSound.Volume = 2
-introSound:Play()
-
-local bgSound = Instance.new("Sound", SoundService)
-bgSound.SoundId = "rbxassetid://9120070652"
-bgSound.Volume = 0.5
-bgSound.Looped = true
-bgSound:Play()
-
-gui.Destroying:Connect(function()
-	bgSound:Stop()
-	bgSound:Destroy()
-end)
-
--- Particle Effect
-local attachment = Instance.new("Attachment", frame)
-local particle = Instance.new("ParticleEmitter", attachment)
-particle.Texture = "rbxassetid://284205403"
-particle.Lifetime = NumberRange.new(1)
-particle.Rate = 20
-particle.Speed = NumberRange.new(0.5, 1.5)
-particle.Size = NumberSequence.new(0.2)
-particle.Rotation = NumberRange.new(0, 360)
-particle.RotSpeed = NumberRange.new(10, 20)
-particle.Color = ColorSequence.new(Color3.fromRGB(255, 70, 70))
-particle.LightInfluence = 1
-particle.Transparency = NumberSequence.new({
-	NumberSequenceKeypoint.new(0, 0),
-	NumberSequenceKeypoint.new(1, 1)
-})
-
--- Scrolling Area
+-- Scrolling Content
 local scrolling = Instance.new("ScrollingFrame", frame)
 scrolling.Size = UDim2.new(1, -20, 1, -60)
 scrolling.Position = UDim2.new(0, 10, 0, 50)
@@ -136,11 +102,12 @@ scrolling.ScrollBarThickness = 4
 local layout = Instance.new("UIListLayout", scrolling)
 layout.Padding = UDim.new(0, 8)
 layout.SortOrder = Enum.SortOrder.LayoutOrder
+
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	scrolling.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
 end)
 
--- Button Utility
+-- Utility Button
 local function createButton(text, callback)
 	local btn = Instance.new("TextButton")
 	btn.Size = UDim2.new(1, 0, 0, 36)
@@ -149,35 +116,51 @@ local function createButton(text, callback)
 	btn.Font = Enum.Font.GothamBold
 	btn.TextSize = 16
 	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.AutoButtonColor = true
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 	btn.MouseButton1Click:Connect(callback)
 	return btn
 end
 
+-- Label: One Fruit Simulator
+local labelOFS = Instance.new("TextLabel", scrolling)
+labelOFS.Size = UDim2.new(1, 0, 0, 24)
+labelOFS.BackgroundTransparency = 1
+labelOFS.Text = "One Fruit Simulator"
+labelOFS.Font = Enum.Font.GothamBold
+labelOFS.TextSize = 14
+labelOFS.TextColor3 = Color3.fromRGB(255, 255, 255)
+
 -- Game Buttons
 local buttons = {
-	{"Nexus Hub", "loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()"},
-	{"OMG Hub", "loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()"},
+	{"Nexus Hub", "https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"},
+	{"OMG Hub", "https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"},
 }
 
 for _, entry in ipairs(buttons) do
 	local btn = createButton(entry[1], function()
-		local info = Instance.new("TextLabel", gui)
-		info.Size = UDim2.new(0, 220, 0, 30)
-		info.Position = UDim2.new(1, -230, 1, -40)
-		info.AnchorPoint = Vector2.new(0, 1)
-		info.BackgroundTransparency = 1
-		info.Text = "SCRIPT IS RUNNING..."
-		info.Font = Enum.Font.GothamBold
-		info.TextSize = 14
-		info.TextColor3 = Color3.fromRGB(255, 255, 255)
-		TweenService:Create(info, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
+		local runStatus = Instance.new("TextLabel", gui)
+		runStatus.Size = UDim2.new(0, 220, 0, 30)
+		runStatus.Position = UDim2.new(1, -230, 1, -40)
+		runStatus.AnchorPoint = Vector2.new(0, 1)
+		runStatus.BackgroundTransparency = 1
+		runStatus.Text = "SCRIPT IS RUNNING..."
+		runStatus.Font = Enum.Font.GothamBold
+		runStatus.TextSize = 14
+		runStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+		TweenService:Create(runStatus, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 		task.wait(1)
-		TweenService:Create(info, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+		TweenService:Create(runStatus, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
 		task.wait(0.5)
-		info:Destroy()
-		loadstring(game:HttpGet(entry[2]))()
-		gui:Destroy()
+		runStatus:Destroy()
+
+		local success, err = pcall(function()
+			loadstring(game:HttpGet(entry[2]))()
+		end)
+		if not success then
+			warn("Failed to run script for " .. entry[1] .. ": " .. tostring(err))
+		end
 	end)
 	btn.Parent = scrolling
 end
