@@ -1,178 +1,45 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
-
-local TweenService = game:GetService("TweenService")
-local SoundService = game:GetService("SoundService")
-local Lighting = game:GetService("Lighting")
-
--- Background Blur
-local blur = Instance.new("BlurEffect", Lighting)
-blur.Size = 12
-
--- GUI Setup
-local gui = Instance.new("ScreenGui")
-gui.Name = "ChaosLoader"
-gui.IgnoreGuiInset = true
-gui.ResetOnSpawn = false
-gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-gui.Destroying:Connect(function()
-    if blur then blur:Destroy() end
-end)
-
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 420, 0, 260)
-frame.Position = UDim2.new(0.5, 0, 1.5, 0)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.BackgroundTransparency = 0.3
-frame.BorderSizePixel = 0
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
-
--- Animate in
-TweenService:Create(frame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-    Position = UDim2.new(0.5, 0, 0.5, 0)
-}):Play()
-
--- Close Button
-local closeButton = Instance.new("TextButton", frame)
-closeButton.Size = UDim2.new(0, 40, 0, 40)
-closeButton.Position = UDim2.new(1, -45, 0, 5)
-closeButton.BackgroundTransparency = 1
-closeButton.Text = "X"
-closeButton.TextColor3 = Color3.fromRGB(255, 70, 70)
-closeButton.Font = Enum.Font.FredokaOne
-closeButton.TextSize = 24
-closeButton.ZIndex = 10
-closeButton.MouseButton1Click:Connect(function() gui:Destroy() end)
-
--- Title and Status
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 40)
-title.Position = UDim2.new(0, 0, 0, 10)
-title.BackgroundTransparency = 1
-title.Text = "CHAOS MULTI LOADER"
-title.Font = Enum.Font.FredokaOne
-title.TextSize = 28
-title.TextColor3 = Color3.fromRGB(255, 70, 70)
-title.TextTransparency = 1
-
-local status = Instance.new("TextLabel", frame)
-status.Size = UDim2.new(1, 0, 0, 30)
-status.Position = UDim2.new(0, 0, 1, -30)
-status.BackgroundTransparency = 1
-status.Text = "LOADER HAS BEEN RUN"
-status.Font = Enum.Font.GothamBold
-status.TextSize = 16
-status.TextColor3 = Color3.fromRGB(255, 255, 255)
-status.TextTransparency = 1
-
--- Tween Texts In
-TweenService:Create(title, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-
--- Sound Effect
-local introSound = Instance.new("Sound", SoundService)
-introSound.SoundId = "rbxassetid://9118823107"
-introSound.Volume = 2
-introSound:Play()
-
-local bgSound = Instance.new("Sound", SoundService)
-bgSound.SoundId = "rbxassetid://9120070652"
-bgSound.Volume = 0.5
-bgSound.Looped = true
-bgSound:Play()
-
-gui.Destroying:Connect(function()
-	bgSound:Stop()
-	bgSound:Destroy()
-end)
-
--- Particle Effect
-local attachment = Instance.new("Attachment", frame)
-local particle = Instance.new("ParticleEmitter", attachment)
-particle.Texture = "rbxassetid://284205403"
-particle.Lifetime = NumberRange.new(1)
-particle.Rate = 20
-particle.Speed = NumberRange.new(0.5, 1.5)
-particle.Size = NumberSequence.new(0.2)
-particle.Rotation = NumberRange.new(0, 360)
-particle.RotSpeed = NumberRange.new(10, 20)
-particle.Color = ColorSequence.new(Color3.fromRGB(255, 70, 70))
-particle.LightInfluence = 1
-particle.Transparency = NumberSequence.new({
-	NumberSequenceKeypoint.new(0, 0),
-	NumberSequenceKeypoint.new(1, 1)
-})
-
--- Utility Functions
-local function createLabel(text, posY)
-	local lbl = Instance.new("TextLabel", frame)
-	lbl.Size = UDim2.new(1, -20, 0, 25)
-	lbl.Position = UDim2.new(0, 10, 0, posY)
-	lbl.BackgroundTransparency = 1
-	lbl.Text = text
-	lbl.Font = Enum.Font.GothamBold
-	lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-	lbl.TextSize = 14
-	return lbl
-end
-
-local function createSeparator(posY)
-	local sep = Instance.new("Frame", frame)
-	sep.Size = UDim2.new(0.9, 0, 0, 2)
-	sep.Position = UDim2.new(0.05, 0, 0, posY)
-	sep.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-	sep.BorderSizePixel = 0
-end
-
-local function createButton(name, posY, callback)
-	local btn = Instance.new("TextButton", frame)
-	btn.Size = UDim2.new(0.8, 0, 0, 35)
-	btn.Position = UDim2.new(0.1, 0, 0, posY)
-	btn.Text = name
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 16
-	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-	btn.MouseButton1Click:Connect(callback)
-	return btn
-end
-
--- Game List
-local ypos = 60
-createLabel("One Fruit Simulator", ypos)
-ypos += 25
-createSeparator(ypos)
-ypos += 10
-
-local games = {
-	{"Nexus Hub", "https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"},
-	{"OMG Hub", "https://raw.githubusercontent.com/omgeternalhub/loader/main/loader.lua"},
-	-- Game names without scripts
-	"UNIVERSAL MENU", "BEAKS", "BLOX FRUIT", "BLUE LOCK", "ARISE CROSSOVER", "FISCH", "LEGEND OF SPEED", "NINJA LEGENDS",
-	"SURVIVE THE KILLER", "DEAD RAILS", "BROOKHAVEN", "MURDER MYSTERY 2", "THE STRONGEST BATTLEGROUNDS", "MUSCLE LEGENDS",
-	"Doors", "Blade Ball", "Rivals", "A Dusty Trip", "Pets Go", "Arsenal", "3008", "Dead Sails", "CDID",
-	"Build a Boat for Treasure", "Sols RNG", "Natural Disaster", "Broken Bone IV", "Ultimate Battlegrounds", "Taxi Boss",
-	"Hide or Die", "Arm Wrestle Simulator", "Combat Warrior", "Eat the World", "Zombie Attack", "King Legacy",
-	"Fruit Battlegrounds", "Evade"
+local a=game:GetService("TweenService")local b=game:GetService("SoundService")local c=game:GetService("Lighting")local d=Instance.new("BlurEffect",c)d.Size=12
+local e=Instance.new("ScreenGui")e.Name="ChaosLoader"e.IgnoreGuiInset=true e.ResetOnSpawn=false e.Parent=game.Players.LocalPlayer:WaitForChild("PlayerGui")
+e.Destroying:Connect(function()if d then d:Destroy()end end)
+local f=Instance.new("Frame",e)f.Size=UDim2.new(0,420,0,260)f.Position=UDim2.new(0.5,0,1.5,0)f.AnchorPoint=Vector2.new(0.5,0.5)f.BackgroundColor3=Color3.fromRGB(25,25,25)f.BackgroundTransparency=0.3 f.BorderSizePixel=0 Instance.new("UICorner",f).CornerRadius=UDim.new(0,12)
+a:Create(f,TweenInfo.new(0.7,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Position=UDim2.new(0.5,0,0.5,0)}):Play()
+local g=Instance.new("TextButton",f)g.Size=UDim2.new(0,40,0,40)g.Position=UDim2.new(1,-45,0,5)g.BackgroundTransparency=1 g.Text="X"g.TextColor3=Color3.fromRGB(255,70,70)g.Font=Enum.Font.FredokaOne g.TextSize=24 g.ZIndex=10 g.MouseButton1Click:Connect(function()e:Destroy()end)
+local h=Instance.new("TextLabel",f)h.Size=UDim2.new(1,0,0,40)h.Position=UDim2.new(0,0,0,10)h.BackgroundTransparency=1 h.Text="CHAOS MULTI LOADER"h.Font=Enum.Font.FredokaOne h.TextSize=28 h.TextColor3=Color3.fromRGB(255,70,70)h.TextTransparency=1
+local i=Instance.new("TextLabel",f)i.Size=UDim2.new(1,0,0,30)i.Position=UDim2.new(0,0,1,-30)i.BackgroundTransparency=1 i.Text="LOADER HAS BEEN RUN"i.Font=Enum.Font.GothamBold i.TextSize=16 i.TextColor3=Color3.fromRGB(255,255,255)i.TextTransparency=1
+a:Create(h,TweenInfo.new(0.5),{TextTransparency=0}):Play()a:Create(i,TweenInfo.new(0.5),{TextTransparency=0}):Play()
+local j=Instance.new("Sound",b)j.SoundId="rbxassetid://9118823107"j.Volume=2 j:Play()
+local k=Instance.new("Sound",b)k.SoundId="rbxassetid://9120070652"k.Volume=0.5 k.Looped=true k:Play()
+e.Destroying:Connect(function()k:Stop()k:Destroy()end)
+local l=Instance.new("Attachment",f)local m=Instance.new("ParticleEmitter",l)m.Texture="rbxassetid://284205403"m.Lifetime=NumberRange.new(1)m.Rate=20 m.Speed=NumberRange.new(0.5,1.5)m.Size=NumberSequence.new(0.2)m.Rotation=NumberRange.new(0,360)m.RotSpeed=NumberRange.new(10,20)m.Color=ColorSequence.new(Color3.fromRGB(255,70,70))m.LightInfluence=1 m.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,1)})
+local function n(o,p)local q=Instance.new("TextLabel",f)q.Size=UDim2.new(1,-20,0,25)q.Position=UDim2.new(0,10,0,p)q.BackgroundTransparency=1 q.Text=o q.Font=Enum.Font.GothamBold q.TextColor3=Color3.fromRGB(255,255,255)q.TextSize=14 return q end
+local function r(s)local t=Instance.new("Frame",f)t.Size=UDim2.new(0.9,0,0,2)t.Position=UDim2.new(0.05,0,0,s)t.BackgroundColor3=Color3.fromRGB(150,150,150)t.BorderSizePixel=0 end
+local function u(v,w,x)local y=Instance.new("TextButton",f)y.Size=UDim2.new(0.8,0,0,35)y.Position=UDim2.new(0.1,0,0,w)y.Text=v y.Font=Enum.Font.GothamBold y.TextSize=16 y.BackgroundColor3=Color3.fromRGB(40,40,40)y.TextColor3=Color3.fromRGB(255,255,255)Instance.new("UICorner",y).CornerRadius=UDim.new(0,6)y.MouseButton1Click:Connect(x)return y end
+local z=60
+n("One Fruit Simulator",z)z+=25 r(z)z+=10
+local A={
+	{"Nexus Hub","https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"},
+	{"OMG Hub","https://raw.githubusercontent.com/omgeternalhub/loader/main/loader.lua"},
+	"UNIVERSAL MENU","BEAKS","BLOX FRUIT","BLUE LOCK","ARISE CROSSOVER","FISCH","LEGEND OF SPEED","NINJA LEGENDS",
+	"SURVIVE THE KILLER","DEAD RAILS","BROOKHAVEN","MURDER MYSTERY 2","THE STRONGEST BATTLEGROUNDS","MUSCLE LEGENDS",
+	"Doors","Blade Ball","Rivals","A Dusty Trip","Pets Go","Arsenal","3008","Dead Sails","CDID",
+	"Build a Boat for Treasure","Sols RNG","Natural Disaster","Broken Bone IV","Ultimate Battlegrounds","Taxi Boss",
+	"Hide or Die","Arm Wrestle Simulator","Combat Warrior","Eat the World","Zombie Attack","King Legacy",
+	"Fruit Battlegrounds","Evade"
 }
-
-for _, entry in ipairs(games) do
-	if type(entry) == "table" then
-		ypos += 5
-		local btn = createButton(entry[1], ypos, function()
-			status.Text = "SCRIPT IS RUNNING..."
-			status.TextTransparency = 0
-			loadstring(game:HttpGet(entry[2]))()
-			TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-			gui:Destroy()
+for _,B in ipairs(A)do
+	if type(B)=="table"then
+		z+=5
+		local C=u(B[1],z,function()
+			i.Text="SCRIPT IS RUNNING..."
+			i.TextTransparency=0
+			loadstring(game:HttpGet(B[2]))()
+			a:Create(i,TweenInfo.new(0.5),{TextTransparency=1}):Play()
+			e:Destroy()
 		end)
-		ypos += 40
-	elseif type(entry) == "string" then
-		createLabel(entry, ypos)
-		ypos += 25
-		createSeparator(ypos)
-		ypos += 10
+		z+=40
+	elseif type(B)=="string"then
+		n(B,z)
+		z+=25 r(z)z+=10
 	end
 end
