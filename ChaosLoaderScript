@@ -211,10 +211,8 @@ local universalScripts = {
 			task.wait(1)
 			vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 		end)
-	]]},
-	{"🦸 FLY GUI", 'loadstring("\108\111...")()'},
-	{"TESTING", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/main/Main.lua"))()'},
-}
+	]]}
+	}
 
 local bloxFruitScripts = {
 	{"THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
