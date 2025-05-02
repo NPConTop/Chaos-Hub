@@ -1,142 +1,32 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 
-local TweenService = game:GetService("TweenService")
-local SoundService = game:GetService("SoundService")
+local TweenService = game:GetService("TweenService") local SoundService = game:GetService("SoundService")
 
--- GUI Setup
-local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "ChaosLoader"
-gui.IgnoreGuiInset = true
-gui.ResetOnSpawn = false
+-- GUI Setup local gui = Instance.new("ScreenGui", game.CoreGui) gui.Name = "ChaosLoader" gui.IgnoreGuiInset = true gui.ResetOnSpawn = false
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 420, 0, 240)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.BackgroundTransparency = 0.3
-frame.BorderSizePixel = 0
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+local frame = Instance.new("Frame", gui) frame.Size = UDim2.new(0, 420, 0, 260) frame.Position = UDim2.new(0.5, 0, 0.5, 0) frame.AnchorPoint = Vector2.new(0.5, 0.5) frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25) frame.BackgroundTransparency = 0.3 frame.BorderSizePixel = 0 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Rainbow Borders
-for i = 0, 3 do
-	local border = Instance.new("Frame", frame)
-	border.Name = "RainbowBorder"..i
-	border.BackgroundColor3 = Color3.fromHSV(i/4, 1, 1)
-	border.BorderSizePixel = 0
-	border.ZIndex = 2
-	if i == 0 then
-		border.Size = UDim2.new(1, 0, 0, 2)
-		border.Position = UDim2.new(0, 0, 0, 0)
-	elseif i == 1 then
-		border.Size = UDim2.new(0, 2, 1, 0)
-		border.Position = UDim2.new(0, 0, 0, 0)
-	elseif i == 2 then
-		border.Size = UDim2.new(1, 0, 0, 2)
-		border.Position = UDim2.new(0, 0, 1, -2)
-	elseif i == 3 then
-		border.Size = UDim2.new(0, 2, 1, 0)
-		border.Position = UDim2.new(1, -2, 0, 0)
-	end
-end
+-- Close Button (Sword Emoji) local closeButton = Instance.new("TextButton", frame) closeButton.Size = UDim2.new(0, 40, 0, 40) closeButton.Position = UDim2.new(1, -45, 0, 5) closeButton.BackgroundTransparency = 1 closeButton.Text = "⚔️" closeButton.TextColor3 = Color3.fromRGB(255, 70, 70) closeButton.Font = Enum.Font.FredokaOne closeButton.TextSize = 24 closeButton.ZIndex = 10 closeButton.MouseButton1Click:Connect(function() gui:Destroy() end)
 
--- Title
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 40)
-title.Position = UDim2.new(0, 0, 0, 10)
-title.BackgroundTransparency = 1
-title.Text = "CHAOS MULTI LOADER"
-title.Font = Enum.Font.FredokaOne
-title.TextSize = 28
-title.TextColor3 = Color3.fromRGB(255, 70, 70)
-title.TextTransparency = 1
+-- Rainbow Borders for i = 0, 3 do local border = Instance.new("Frame", frame) border.Name = "RainbowBorder" .. i border.BackgroundColor3 = Color3.fromHSV(i / 4, 1, 1) border.BorderSizePixel = 0 border.ZIndex = 2 if i == 0 then border.Size = UDim2.new(1, 0, 0, 2) border.Position = UDim2.new(0, 0, 0, 0) elseif i == 1 then border.Size = UDim2.new(0, 2, 1, 0) border.Position = UDim2.new(0, 0, 0, 0) elseif i == 2 then border.Size = UDim2.new(1, 0, 0, 2) border.Position = UDim2.new(0, 0, 1, -2) elseif i == 3 then border.Size = UDim2.new(0, 2, 1, 0) border.Position = UDim2.new(1, -2, 0, 0) end end
 
--- Status Label (bottom right)
-local status = Instance.new("TextLabel", gui)
-status.Size = UDim2.new(0, 180, 0, 30)
-status.Position = UDim2.new(1, -190, 1, -40)
-status.AnchorPoint = Vector2.new(0, 0)
-status.BackgroundTransparency = 1
-status.Text = ""
-status.Font = Enum.Font.GothamBold
-status.TextSize = 16
-status.TextColor3 = Color3.fromRGB(255, 255, 255)
-status.TextTransparency = 1
+-- Title and Status local title = Instance.new("TextLabel", frame) title.Size = UDim2.new(1, 0, 0, 40) title.Position = UDim2.new(0, 0, 0, 10) title.BackgroundTransparency = 1 title.Text = "CHAOS MULTI LOADER" title.Font = Enum.Font.FredokaOne title.TextSize = 28 title.TextColor3 = Color3.fromRGB(255, 70, 70) title.TextTransparency = 1
 
--- Tween In
-TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundTransparency = 0.1}):Play()
-TweenService:Create(title, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
+local status = Instance.new("TextLabel", frame) status.Size = UDim2.new(1, 0, 0, 30) status.Position = UDim2.new(0, 0, 1, -30) status.BackgroundTransparency = 1 status.Text = "LOADER HAS BEEN RUN" status.Font = Enum.Font.GothamBold status.TextSize = 16 status.TextColor3 = Color3.fromRGB(255, 255, 255) status.TextTransparency = 1
 
--- Sound
-local sound = Instance.new("Sound", SoundService)
-sound.SoundId = "rbxassetid://9118823107"
-sound.Volume = 2
-sound:Play()
+-- Tween In TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundTransparency = 0.1}):Play() TweenService:Create(title, TweenInfo.new(0.5), {TextTransparency = 0}):Play() TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 
--- Utility
-local function createLabel(text, posY)
-	local lbl = Instance.new("TextLabel", frame)
-	lbl.Size = UDim2.new(1, -20, 0, 25)
-	lbl.Position = UDim2.new(0, 10, 0, posY)
-	lbl.BackgroundTransparency = 1
-	lbl.Text = text
-	lbl.Font = Enum.Font.GothamBold
-	lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
-	lbl.TextSize = 14
-	return lbl
-end
+-- Sound local sound = Instance.new("Sound", SoundService) sound.SoundId = "rbxassetid://9118823107" sound.Volume = 2 sound:Play()
 
-local function createSeparator(posY)
-	local sep = Instance.new("Frame", frame)
-	sep.Size = UDim2.new(0.9, 0, 0, 1)
-	sep.Position = UDim2.new(0.05, 0, 0, posY)
-	sep.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-	sep.BorderSizePixel = 0
-end
+-- Utility functions local function createLabel(text, posY) local lbl = Instance.new("TextLabel", frame) lbl.Size = UDim2.new(1, -20, 0, 25) lbl.Position = UDim2.new(0, 10, 0, posY) lbl.BackgroundTransparency = 1 lbl.Text = text lbl.Font = Enum.Font.GothamBold lbl.TextColor3 = Color3.fromRGB(255, 255, 255) lbl.TextSize = 14 return lbl end
 
-local function createButton(name, posY, callback)
-	local btn = Instance.new("TextButton", frame)
-	btn.Size = UDim2.new(0.8, 0, 0, 35)
-	btn.Position = UDim2.new(0.1, 0, 0, posY)
-	btn.Text = name
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 16
-	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-	btn.MouseButton1Click:Connect(function()
-		status.Text = "SCRIPT IS RUNNING..."
-		status.TextTransparency = 0
-		callback()
-		TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-		gui:Destroy()
-	end)
-	return btn
-end
+local function createSeparator(posY) local sep = Instance.new("Frame", frame) sep.Size = UDim2.new(0.9, 0, 0, 2) sep.Position = UDim2.new(0.05, 0, 0, posY) sep.BackgroundColor3 = Color3.fromRGB(150, 150, 150) sep.BorderSizePixel = 0 end
 
--- Game Labels & Buttons
-local ypos = 60
+local function createButton(name, posY, callback) local btn = Instance.new("TextButton", frame) btn.Size = UDim2.new(0.8, 0, 0, 35) btn.Position = UDim2.new(0.1, 0, 0, posY) btn.Text = name btn.Font = Enum.Font.GothamBold btn.TextSize = 16 btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40) btn.TextColor3 = Color3.fromRGB(255, 255, 255) Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6) btn.MouseButton1Click:Connect(callback) return btn end
 
-createLabel("One Fruit Simulator", ypos)
-ypos += 25
+-- Game Entries local ypos = 60 createLabel("One Fruit Simulator", ypos) ypos += 25 createSeparator(ypos) ypos += 10
 
-local nexusBtn = createButton("Nexus Hub", ypos, function()
-	loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()
-end)
+local games = { {"Nexus Hub", "https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"}, {"OMG Hub", "https://raw.githubusercontent.com/omgeternalhub/loader/main/loader.lua"}, "UNIVERSAL MENU", "BEAKS", "BLOX FRUIT", "BLUE LOCK", "ARISE CROSSOVER", "FISCH", "LEGEND OF SPEED", "NINJA LEGENDS", "SURVIVE THE KILLER", "DEAD RAILS", "BROOKHAVEN", "MURDER MYSTERY 2", "THE STRONGEST BATTLEGROUNDS", "MUSCLE LEGENDS", "Doors", "Blade Ball", "Rivals", "A Dusty Trip", "Pets Go", "Arsenal", "3008", "Dead Sails", "CDID", "Build a Boat for Treasure", "Sols RNG", "Natural Disaster", "Broken Bone IV", "Ultimate Battlegrounds", "Taxi Boss", "Hide or Die", "Arm Wrestle Simulator", "Combat Warrior", "Eat the World", "Zombie Attack", "King Legacy", "Fruit Battlegrounds", "Evade" }
 
-ypos += 40
+for _, entry in ipairs(games) do if type(entry) == "table" then ypos += 5 local btn = createButton(entry[1], ypos, function() status.Text = "SCRIPT IS RUNNING..." status.TextTransparency = 0 loadstring(game:HttpGet(entry[2]))() TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 1}):Play() gui:Destroy() end) ypos += 40 elseif type(entry) == "string" then createLabel(entry, ypos) ypos += 25 createSeparator(ypos) ypos += 10 end end
 
-local omgBtn = createButton("OMG Hub", ypos, function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/omgeternalhub/loader/main/loader.lua"))()
-end)
-
-ypos += 40
-createSeparator(ypos)
-ypos += 10
-
-createLabel("Blox Fruits", ypos)
-ypos += 25
-createSeparator(ypos)
-ypos += 10
-
-createLabel("Grow a Garden Tycoon", ypos)
