@@ -266,3 +266,36 @@ loadScripts("🍎 One Fruit Simulator", oneFruitScripts)
 loadScripts("🌐 UNIVERSAL MENU", universalScripts)
 loadScripts("🍊 Blox Fruit", bloxFruitScripts)
 loadScripts("🐤 Beaks", beaksScripts)
+
+-- === LABEL GAME (tanpa tombol, pakai divider pelangi) ===
+local gameSections = {
+	"⚡️ LEGEND OF SPEED", "🥷 NINJA LEGENDS", "🔪 SURVIVE THE KILLER", "🚃 DEAD RAILS", "🏡 BROOKHAVEN",
+	"🕵️‍♂️ MURDER MYSTERY 2", "🥊 THE STRONGEST BATTLEGROUNDS", "💪 MUSCLE LEGENDS", "🚪 Doors", "⚔️ Blade Ball",
+	"👥 Rivals", "🚗 A Dusty Trip", "🐾 Pets Go", "🔫 Arsenal", "🏬 3008", "☠️ Dead Sails", "🏗️ CDID",
+	"🚤 Build a Boat for Treasure", "🌞 Sols RNG", "🌪️ Natural Disaster", "🦴 Broken Bone IV",
+	"🥇 Ultimate Battlegrounds", "🚕 Taxi Boss", "👻 Hide or Die", "💪 Arm Wrestle Simulator",
+	"🗡️ Combat Warrior", "🍔 Eat the World", "🧟‍♂️ Zombie Attack", "👑 King Legacy",
+	"🥭 Fruit Battlegrounds", "🏃 Evade"
+}
+
+for _, name in ipairs(gameSections) do
+	local label = Instance.new("TextLabel", scrolling)
+	label.Size = UDim2.new(1, 0, 0, 24)
+	label.BackgroundTransparency = 1
+	label.Text = name
+	label.Font = Enum.Font.GothamBold
+	label.TextSize = 14
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.Parent = scrolling
+
+	createRainbowDivider()
+end
+
+local credit = Instance.new("by NPC", frame)
+credit.Size = UDim2.new(1, -20, 0, 16)
+credit.Position = UDim2.new(0, 10, 1, -2)
+credit.BackgroundTransparency = 1
+credit.Text = "Chaos Loader by NPC"
+credit.Font = Enum.Font.Gotham
+credit.TextSize = 12
+credit.TextColor3 = Color3.fromRGB(180, 180, 180)
