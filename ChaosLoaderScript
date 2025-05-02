@@ -6,11 +6,11 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
-local correctKey = "ChaosKey123" -- Ganti ini dengan key buatanmu
+local correctKey = "Chaos_E7F720K1H8289OQP64E1R" -- Ganti ini dengan key buatanmu
 
 -- Sudah punya key?
 if Player:GetAttribute("ChaosVerified") then
-	loadstring(game:HttpGet("https://pastebin.com/raw/yourloadercode"))() -- Ganti link loader
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/refs/heads/main/ChaosLoaderScript"))() -- Ganti link loader
 	return
 end
 
