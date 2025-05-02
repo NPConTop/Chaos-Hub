@@ -215,16 +215,52 @@ end)
 
 end
 
--- === BLOX FRUIT ===
-createLabel("🍊 Blox Fruit")
-createButton("THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()')
-createButton("Than Hub Kaitun", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()')
-createButton("Ganteng Hub Basic", 'loadstring(game:HttpGet("https://pastefy.app/ubGPen1y/raw"))()')
-createButton("Ganteng Hub Remake", 'loadstring(game:HttpGet("https://pastefy.app/WHWvHVxz/raw"))()')
-createButton("Redz Hub", 'loadstring(game:HttpGet("https://pastefy.app/KLyLxd0w/raw"))()')
-createButton("Tsuo Hub", 'loadstring(game:HttpGet("https://pastefy.app/mQj6OxHb/raw"))()')
 
--- === BEAKS ===
+local labelBloxFruit = Instance.new("TextLabel", scrolling)
+label.Size = UDim2.new(1, 0, 0, 24)
+labelBloxFruit.BackgroundTransparency = 1
+labelBloxFruit.Text = "🍊 Blox Fruit"
+labelBloxFruit.Font = Enum.Font.GothamBold
+labelBloxFruit.TextSize = 14
+labelBloxFruit.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local BloxFruitScript = {
+{"THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
+{"Than Hub Kaitun", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
+{"Ganteng Hub Basic", 'loadstring(game:HttpGet("https://pastefy.app/ubGPen1y/raw"))()'},
+{"Ganteng Hub Remake", 'loadstring(game:HttpGet("https://pastefy.app/WHWvHVxz/raw"))()'},
+{"Redz Hub", 'loadstring(game:HttpGet("https://pastefy.app/KLyLxd0w/raw"))()'},
+{"Tsuo Hub", 'loadstring(game:HttpGet("https://pastefy.app/mQj6OxHb/raw"))()'},
+
+for _, data in ipairs(BloxFruitScript) do
+createButton(data[1], function()
+local runStatus = Instance.new("TextLabel", gui)
+runStatus.Size = UDim2.new(0, 220, 0, 30)
+runStatus.Position = UDim2.new(1, -230, 1, -40)
+runStatus.AnchorPoint = Vector2.new(0, 1)
+runStatus.BackgroundTransparency = 1
+runStatus.Text = "SCRIPT IS RUN..."
+runStatus.Font = Enum.Font.GothamBold
+runStatus.TextSize = 14
+runStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+task.wait(1)
+TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+task.delay(0.5, function() runStatus:Destroy() end)
+
+local success, err = pcall(function()  
+		loadstring(data[2])()  
+	end)  
+	if not success then  
+		warn("Script Error for " .. data[1] .. ": " .. tostring(err))  
+	end  
+
+	gui:Destroy()  
+end)
+
+end
+
+
 createLabel("🐤 Beaks")
 createButton("Mukuro Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/f1jU2QZg"))()')
 createButton("Lunor Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/bAmNTU5Q"))()')
