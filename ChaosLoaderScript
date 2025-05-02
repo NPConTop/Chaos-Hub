@@ -2,83 +2,169 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 
 local TweenService = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
-local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local PlayerGui = Player:WaitForChild("PlayerGui")
-
-local correctKey = "Chaos_E7F720K1H8289OQP64E1R" -- Ganti ini dengan key buatanmu
-
--- Sudah punya key?
-if Player:GetAttribute("ChaosVerified") then
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/refs/heads/main/ChaosLoaderScript"))() -- Ganti link loader
-	return
-end
+local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Blur
 local blur = Instance.new("BlurEffect", Lighting)
 blur.Size = 12
 
--- GUI
-local gui = Instance.new("ScreenGui", PlayerGui)
-gui.Name = "ChaosKeyUI"
+-- ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Name = "ChaosLoader"
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
+gui.Parent = PlayerGui
 
 gui.Destroying:Connect(function()
 	if blur then blur:Destroy() end
 end)
 
--- Frame
+-- Main Frame
 local frame = Instance.new("Frame", gui)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.Size = UDim2.new(0, 360, 0, 180)
+frame.Position = UDim2.new(0.5, 0, 1.5, 0)
+frame.Size = UDim2.new(0, 420, 0, 260)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.BackgroundTransparency = 0.1
+frame.BackgroundTransparency = 0.3
+frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+-- Rainbow Border
+local rainbow = Instance.new("UIStroke")
+rainbow.Thickness = 3
+rainbow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+rainbow.LineJoinMode = Enum.LineJoinMode.Round
+rainbow.Parent = frame
+
+task.spawn(function()
+	local h = 0
+	while rainbow and rainbow.Parent do
+		h = (h + 0.01) % 1
+		rainbow.Color = ColorSequence.new(Color3.fromHSV(h, 1, 1))
+		task.wait(0.03)
+	end
+end)
+
+-- Animate In
+TweenService:Create(frame, TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+	Position = UDim2.new(0.5, 0, 0.5, 0)
+}):Play()
 
 -- Title
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 40)
-title.Position = UDim2.new(0, 0, 0, 5)
+title.Size = UDim2.new(1, -50, 0, 40)
+title.Position = UDim2.new(0, 10, 0, 5)
 title.BackgroundTransparency = 1
-title.Text = "ENTER YOUR CHAOS KEY"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 20
+title.Text = "CHAOS MULTI LOADER"
+title.Font = Enum.Font.FredokaOne
+title.TextSize = 26
 title.TextColor3 = Color3.fromRGB(255, 70, 70)
+title.TextXAlignment = Enum.TextXAlignment.Left
 
--- KeyBox
-local box = Instance.new("TextBox", frame)
-box.Size = UDim2.new(1, -40, 0, 40)
-box.Position = UDim2.new(0, 20, 0, 60)
-box.PlaceholderText = "Type your key here"
-box.Font = Enum.Font.Gotham
-box.TextSize = 16
-box.TextColor3 = Color3.new(1, 1, 1)
-box.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
-
--- Verify Button
-local verifyBtn = Instance.new("TextButton", frame)
-verifyBtn.Size = UDim2.new(1, -40, 0, 35)
-verifyBtn.Position = UDim2.new(0, 20, 0, 110)
-verifyBtn.Text = "Verify Key"
-verifyBtn.Font = Enum.Font.GothamBold
-verifyBtn.TextSize = 16
-verifyBtn.TextColor3 = Color3.new(1, 1, 1)
-verifyBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Instance.new("UICorner", verifyBtn).CornerRadius = UDim.new(0, 6)
-
--- Logic
-verifyBtn.MouseButton1Click:Connect(function()
-	if box.Text == correctKey then
-		Player:SetAttribute("ChaosVerified", true)
-		gui:Destroy()
-		loadstring(game:HttpGet("https://pastebin.com/raw/yourloadercode"))() -- Ganti link loader
-	else
-		box.Text = ""
-		box.PlaceholderText = "Wrong key. Try again!"
-	end
+-- Close Button
+local closeButton = Instance.new("TextButton", frame)
+closeButton.Size = UDim2.new(0, 40, 0, 40)
+closeButton.Position = UDim2.new(1, -45, 0, 5)
+closeButton.BackgroundTransparency = 1
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.FredokaOne
+closeButton.TextColor3 = Color3.fromRGB(255, 70, 70)
+closeButton.TextSize = 24
+closeButton.ZIndex = 10
+closeButton.MouseButton1Click:Connect(function()
+	gui:Destroy()
 end)
+
+-- Scrolling Content
+local scrolling = Instance.new("ScrollingFrame", frame)
+scrolling.Size = UDim2.new(1, -20, 1, -60)
+scrolling.Position = UDim2.new(0, 10, 0, 50)
+scrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrolling.BackgroundTransparency = 1
+scrolling.ScrollBarThickness = 4
+
+local layout = Instance.new("UIListLayout", scrolling)
+layout.Padding = UDim.new(0, 8)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scrolling.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+end)
+
+-- Button Utility
+local function createButton(text, callback)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, 0, 0, 36)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 16
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+	btn.MouseButton1Click:Connect(callback)
+	btn.Parent = scrolling
+end
+
+-- Label Header
+local labelOFS = Instance.new("TextLabel", scrolling)
+labelOFS.Size = UDim2.new(1, 0, 0, 24)
+labelOFS.BackgroundTransparency = 1
+labelOFS.Text = "One Fruit Simulator"
+labelOFS.Font = Enum.Font.GothamBold
+labelOFS.TextSize = 14
+labelOFS.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Buttons
+local scripts = {
+	{"Nexus Hub", "https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"},
+	{"OMG Hub", "https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"},
+}
+
+for _, data in ipairs(scripts) do
+	createButton(data[1], function()
+		local runStatus = Instance.new("TextLabel", gui)
+		runStatus.Size = UDim2.new(0, 220, 0, 30)
+		runStatus.Position = UDim2.new(1, -230, 1, -40)
+		runStatus.AnchorPoint = Vector2.new(0, 1)
+		runStatus.BackgroundTransparency = 1
+		runStatus.Text = "SCRIPT IS RUNNING..."
+		runStatus.Font = Enum.Font.GothamBold
+		runStatus.TextSize = 14
+		runStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+		task.wait(1)
+		TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+		task.delay(0.5, function() runStatus:Destroy() end)
+
+		local success, err = pcall(function()
+			loadstring(game:HttpGet(data[2]))()
+		end)
+		if not success then
+			warn("Script Error for " .. data[1] .. ": " .. tostring(err))
+		end
+
+		gui:Destroy()
+	end)
+end
+
+-- Static Labels
+local sections = {
+	"UNIVERSAL MENU", "BEAKS", "BLOX FRUIT", "BLUE LOCK", "ARISE CROSSOVER", "FISCH", "LEGEND OF SPEED",
+	"NINJA LEGENDS", "SURVIVE THE KILLER", "DEAD RAILS", "BROOKHAVEN", "MURDER MYSTERY 2",
+	"THE STRONGEST BATTLEGROUNDS", "MUSCLE LEGENDS", "Doors", "Blade Ball", "Rivals", "A Dusty Trip",
+	"Pets Go", "Arsenal", "3008", "Dead Sails", "CDID", "Build a Boat for Treasure", "Sols RNG",
+	"Natural Disaster", "Broken Bone IV", "Ultimate Battlegrounds", "Taxi Boss", "Hide or Die",
+	"Arm Wrestle Simulator", "Combat Warrior", "Eat the World", "Zombie Attack", "King Legacy",
+	"Fruit Battlegrounds", "Evade"
+}
+
+for _, name in ipairs(sections) do
+	local label = Instance.new("TextLabel", scrolling)
+	label.Size = UDim2.new(1, 0, 0, 24)
+	label.BackgroundTransparency = 1
+	label.Text = name
+	label.Font = Enum.Font.GothamBold
+	label.TextSize = 14
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+end
