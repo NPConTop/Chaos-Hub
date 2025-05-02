@@ -116,8 +116,8 @@ labelOFS.TextColor3 = Color3.fromRGB(255, 255, 255)
 
 -- Buttons
 local scripts = {
-	{"🍉 Nexus Hub", "https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"},
-	{"🍍 OMG Hub", "https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"},
+	{"🍉 Nexus Hub", 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()'},
+	{"🍍 OMG Hub", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()'},
 }
 
 for _, data in ipairs(scripts) do
@@ -137,7 +137,7 @@ for _, data in ipairs(scripts) do
 		task.delay(0.5, function() runStatus:Destroy() end)
 
 		local success, err = pcall(function()
-			loadstring(game:HttpGet(data[2]))()
+			loadstring(data[2])()
 		end)
 		if not success then
 			warn("Script Error for " .. data[1] .. ": " .. tostring(err))
@@ -147,23 +147,56 @@ for _, data in ipairs(scripts) do
 	end)
 end
 
--- Static Labels with Emoji
-local sections = {
-	"🌐 UNIVERSAL MENU", "🐤 BEAKS", "🍊 BLOX FRUIT", "⚽️ BLUE LOCK", "⚔️ ARISE CROSSOVER", "🎣 FISCH", "⚡️ LEGEND OF SPEED",
-	"🥷 NINJA LEGENDS", "🔪 SURVIVE THE KILLER", "🚃 DEAD RAILS", "🏡 BROOKHAVEN", "🕵️‍♂️ MURDER MYSTERY 2",
-	"🥊 THE STRONGEST BATTLEGROUNDS", "💪 MUSCLE LEGENDS", "🚪 Doors", "⚔️ Blade Ball", "👥 Rivals", "🚗 A Dusty Trip",
-	"🐾 Pets Go", "🔫 Arsenal", "🏬 3008", "☠️ Dead Sails", "🏗️ CDID", "🚤 Build a Boat for Treasure", "🌞 Sols RNG",
-	"🌪️ Natural Disaster", "🦴 Broken Bone IV", "🥇 Ultimate Battlegrounds", "🚕 Taxi Boss", "👻 Hide or Die",
-	"💪 Arm Wrestle Simulator", "🗡️ Combat Warrior", "🍔 Eat the World", "🧟‍♂️ Zombie Attack", "👑 King Legacy",
-	"🥭 Fruit Battlegrounds", "🏃 Evade"
+-- UNIVERSAL MENU
+local labelUniversal = Instance.new("TextLabel", scrolling)
+labelUniversal.Size = UDim2.new(1, 0, 0, 24)
+labelUniversal.BackgroundTransparency = 1
+labelUniversal.Text = "🌐 UNIVERSAL MENU"
+labelUniversal.Font = Enum.Font.GothamBold
+labelUniversal.TextSize = 14
+labelUniversal.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local universalScripts = {
+	{"⚙️ Infinite Yield", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()'},
+	{"💻 CMD-X", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))()'},
+	{"🔍 Dex Explorer", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()'},
+	{"🕵️ Simple Spy", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()'},
+	{"🧪 Remote Spy V2", 'loadstring(game:HttpGet("https://pastebin.com/raw/Caniwq2N"))()'},
+	{"🌑 Dark Dex V4", 'loadstring(game:HttpGet("https://gist.githubusercontent.com/Unknownguy12/f7b10c6c7a0cbfd20a1125bdcf3a9dfd/raw"))()'},
+	{"💤 Anti AFK", [[
+		local vu = game:service'VirtualUser'
+		game:service'Players'.LocalPlayer.Idled:connect(function()
+			vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+			task.wait(1)
+			vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		end)
+	]]}
+        {"🦸 FLY GUI", 'loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\40\39\104\116\116\112\115\58\47\47\103\105\115\116\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\109\101\111\122\111\110\101\89\84\47\98\102\48\51\55\100\102\102\57\102\48\97\55\48\48\49\55\51\48\52\100\100\100\54\55\102\100\99\100\51\55\48\47\114\97\119\47\101\49\52\101\55\52\102\52\50\53\98\48\54\48\100\102\53\50\51\51\52\51\99\102\51\48\98\55\56\55\48\55\52\101\98\51\99\53\100\50\47\97\114\99\101\117\115\37\50\53\50\48\120\37\50\53\50\48\102\108\121\37\50\53\50\48\50\37\50\53\50\48\111\98\102\108\117\99\97\116\111\114\39\41\44\116\114\117\101\41\41\40\41\10\10")()'},
 }
 
-for _, name in ipairs(sections) do
-	local label = Instance.new("TextLabel", scrolling)
-	label.Size = UDim2.new(1, 0, 0, 24)
-	label.BackgroundTransparency = 1
-	label.Text = name
-	label.Font = Enum.Font.GothamBold
-	label.TextSize = 14
-	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+for _, data in ipairs(universalScripts) do
+	createButton(data[1], function()
+		local runStatus = Instance.new("TextLabel", gui)
+		runStatus.Size = UDim2.new(0, 220, 0, 30)
+		runStatus.Position = UDim2.new(1, -230, 1, -40)
+		runStatus.AnchorPoint = Vector2.new(0, 1)
+		runStatus.BackgroundTransparency = 1
+		runStatus.Text = "SCRIPT IS RUN..."
+		runStatus.Font = Enum.Font.GothamBold
+		runStatus.TextSize = 14
+		runStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
+		task.wait(1)
+		TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+		task.delay(0.5, function() runStatus:Destroy() end)
+
+		local success, err = pcall(function()
+			loadstring(data[2])()
+		end)
+		if not success then
+			warn("Script Error for " .. data[1] .. ": " .. tostring(err))
+		end
+
+		gui:Destroy()
+	end)
 end
