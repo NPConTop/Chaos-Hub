@@ -212,7 +212,7 @@ local universalScripts = {
 			vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 		end)
 	]]},
-	{"🦸 FLY GUI", 'loadstring("\108\111...")()'}
+	{"🦸 FLY GUI", 'loadstring("\108\111...")()'},
 	{"TESTING", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/main/Main.lua"))()'},
 }
 
