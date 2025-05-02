@@ -32,15 +32,18 @@ frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Rainbow Border
-local rainbow = Instance.new("UIStroke", frame)
+-- Rainbow Border FIXED
+local rainbow = Instance.new("UIStroke")
 rainbow.Thickness = 3
 rainbow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+rainbow.LineJoinMode = Enum.LineJoinMode.Round
+rainbow.Parent = frame
+
 task.spawn(function()
 	local h = 0
-	while frame and frame.Parent do
-		rainbow.Color = ColorSequence.new(Color3.fromHSV(h, 1, 1))
+	while rainbow and rainbow.Parent do
 		h = (h + 0.01) % 1
+		rainbow.Color = ColorSequence.new(Color3.fromHSV(h, 1, 1))
 		task.wait(0.03)
 	end
 end)
@@ -158,10 +161,7 @@ for _, entry in ipairs(buttons) do
 		local success, err = pcall(function()
 			loadstring(game:HttpGet(entry[2]))()
 		end)
-
-		if success then
-			gui:Destroy() -- Destroy GUI only after successful script execution
-		else
+		if not success then
 			warn("Failed to run script for " .. entry[1] .. ": " .. tostring(err))
 		end
 	end)
