@@ -1,11 +1,10 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 
 local TweenService = game:GetService("TweenService")
-local SoundService = game:GetService("SoundService")
 local Lighting = game:GetService("Lighting")
 local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Blur effect
+-- Blur
 local blur = Instance.new("BlurEffect", Lighting)
 blur.Size = 12
 
@@ -32,7 +31,7 @@ frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Rainbow Border FIXED
+-- Rainbow Border
 local rainbow = Instance.new("UIStroke")
 rainbow.Thickness = 3
 rainbow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
@@ -78,22 +77,6 @@ closeButton.MouseButton1Click:Connect(function()
 	gui:Destroy()
 end)
 
--- Floating Status
-local status = Instance.new("TextLabel", gui)
-status.Size = UDim2.new(0, 300, 0, 50)
-status.Position = UDim2.new(0.5, 0, 0.4, 0)
-status.AnchorPoint = Vector2.new(0.5, 0.5)
-status.Text = "LOADER HAS BEEN RUN"
-status.Font = Enum.Font.GothamBold
-status.TextSize = 20
-status.TextColor3 = Color3.fromRGB(255,255,255)
-status.BackgroundTransparency = 1
-status.TextTransparency = 1
-TweenService:Create(status, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
-task.wait(2.5)
-TweenService:Create(status, TweenInfo.new(0.6), {TextTransparency = 1}):Play()
-task.delay(0.7, function() status:Destroy() end)
-
 -- Scrolling Content
 local scrolling = Instance.new("ScrollingFrame", frame)
 scrolling.Size = UDim2.new(1, -20, 1, -60)
@@ -105,12 +88,11 @@ scrolling.ScrollBarThickness = 4
 local layout = Instance.new("UIListLayout", scrolling)
 layout.Padding = UDim.new(0, 8)
 layout.SortOrder = Enum.SortOrder.LayoutOrder
-
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	scrolling.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
 end)
 
--- Utility Button
+-- Button Utility
 local function createButton(text, callback)
 	local btn = Instance.new("TextButton")
 	btn.Size = UDim2.new(1, 0, 0, 36)
@@ -119,13 +101,12 @@ local function createButton(text, callback)
 	btn.Font = Enum.Font.GothamBold
 	btn.TextSize = 16
 	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.AutoButtonColor = true
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 	btn.MouseButton1Click:Connect(callback)
-	return btn
+	btn.Parent = scrolling
 end
 
--- Label: One Fruit Simulator
+-- Label Header
 local labelOFS = Instance.new("TextLabel", scrolling)
 labelOFS.Size = UDim2.new(1, 0, 0, 24)
 labelOFS.BackgroundTransparency = 1
@@ -134,14 +115,14 @@ labelOFS.Font = Enum.Font.GothamBold
 labelOFS.TextSize = 14
 labelOFS.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Game Buttons
-local buttons = {
-	{"Nexus Hub", "https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"},
-	{"OMG Hub", "https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"},
+-- Buttons
+local scripts = {
+	{"Nexus Hub", "loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()"},
+	{"OMG Hub", "loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()"},
 }
 
-for _, entry in ipairs(buttons) do
-	local btn = createButton(entry[1], function()
+for _, data in ipairs(scripts) do
+	createButton(data[1], function()
 		local runStatus = Instance.new("TextLabel", gui)
 		runStatus.Size = UDim2.new(0, 220, 0, 30)
 		runStatus.Position = UDim2.new(1, -230, 1, -40)
@@ -151,24 +132,23 @@ for _, entry in ipairs(buttons) do
 		runStatus.Font = Enum.Font.GothamBold
 		runStatus.TextSize = 14
 		runStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-		TweenService:Create(runStatus, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
+		TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
 		task.wait(1)
-		TweenService:Create(runStatus, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-		task.wait(0.5)
-		runStatus:Destroy()
+		TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+		task.delay(0.5, function() runStatus:Destroy() end)
 
 		local success, err = pcall(function()
-			loadstring(game:HttpGet(entry[2]))()
+			loadstring(game:HttpGet(data[2]))()
 		end)
 		if not success then
-			warn("Failed to run script for " .. entry[1] .. ": " .. tostring(err))
+			warn("Script Error for " .. data[1] .. ": " .. tostring(err))
 		end
+
+		gui:Destroy()
 	end)
-	btn.Parent = scrolling
 end
 
--- Static Game Labels
+-- Static Labels
 local sections = {
 	"UNIVERSAL MENU", "BEAKS", "BLOX FRUIT", "BLUE LOCK", "ARISE CROSSOVER", "FISCH", "LEGEND OF SPEED",
 	"NINJA LEGENDS", "SURVIVE THE KILLER", "DEAD RAILS", "BROOKHAVEN", "MURDER MYSTERY 2",
