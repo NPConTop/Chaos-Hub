@@ -114,7 +114,6 @@ labelOFS.Font = Enum.Font.GothamBold
 labelOFS.TextSize = 14
 labelOFS.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Scripts
 local scripts = {
 {"🍉 Nexus Hub", 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()'},
 {"🍍 OMG Hub", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()'},
@@ -212,15 +211,16 @@ labelBloxFruit.Font = Enum.Font.GothamBold
 labelBloxFruit.TextSize = 14
 labelBloxFruit.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-local BloxFruitScript = {
+local Script = {
 {"THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
 {"Than Hub Kaitun", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
 {"Ganteng Hub Basic", 'loadstring(game:HttpGet("https://pastefy.app/ubGPen1y/raw"))()'},
 {"Ganteng Hub Remake", 'loadstring(game:HttpGet("https://pastefy.app/WHWvHVxz/raw"))()'},
 {"Redz Hub", 'loadstring(game:HttpGet("https://pastefy.app/KLyLxd0w/raw"))()'},
 {"Tsuo Hub", 'loadstring(game:HttpGet("https://pastefy.app/mQj6OxHb/raw"))()'},
+}
 
-for _, data in ipairs(BloxFruitScript) do
+for _, data in ipairs(Script) do
 createButton(data[1], function()
 local runStatus = Instance.new("TextLabel", gui)
 runStatus.Size = UDim2.new(0, 220, 0, 30)
@@ -256,11 +256,12 @@ labelBeaks.Font = Enum.Font.GothamBold
 labelBeaks.TextSize = 14
 labelBeaks.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-local BeaksScript = { 
+local Script = { 
 {"Mukuro Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/f1jU2QZg"))()'},
 {"Lunor Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/bAmNTU5Q"))()'},
 {"Than Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
 {"Native Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/A0NGW0M1"))()'},
+}
 
 for _, data in ipairs(BeaksScript) do
 createButton(data[1], function()
