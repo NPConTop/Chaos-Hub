@@ -1,7 +1,12 @@
-lif not game:IsLoaded() then game.Loaded:Wait() end
+if not game:IsLoaded() then game.Loaded:Wait() end
 
 local TweenService = game:GetService("TweenService")
 local SoundService = game:GetService("SoundService")
+local Lighting = game:GetService("Lighting")
+
+-- Background Blur
+local blur = Instance.new("BlurEffect", Lighting)
+blur.Size = 12
 
 -- GUI Setup
 local gui = Instance.new("ScreenGui")
@@ -10,14 +15,23 @@ gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
+gui.Destroying:Connect(function()
+    if blur then blur:Destroy() end
+end)
+
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 420, 0, 260)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+frame.Position = UDim2.new(0.5, 0, 1.5, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 0
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+-- Animate in
+TweenService:Create(frame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    Position = UDim2.new(0.5, 0, 0.5, 0)
+}):Play()
 
 -- Close Button
 local closeButton = Instance.new("TextButton", frame)
@@ -52,16 +66,43 @@ status.TextSize = 16
 status.TextColor3 = Color3.fromRGB(255, 255, 255)
 status.TextTransparency = 1
 
--- Tween In
-TweenService:Create(frame, TweenInfo.new(0.5), {BackgroundTransparency = 0.1}):Play()
+-- Tween Texts In
 TweenService:Create(title, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 TweenService:Create(status, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
 
 -- Sound Effect
-local sound = Instance.new("Sound", SoundService)
-sound.SoundId = "rbxassetid://9118823107"
-sound.Volume = 2
-sound:Play()
+local introSound = Instance.new("Sound", SoundService)
+introSound.SoundId = "rbxassetid://9118823107"
+introSound.Volume = 2
+introSound:Play()
+
+local bgSound = Instance.new("Sound", SoundService)
+bgSound.SoundId = "rbxassetid://9120070652"
+bgSound.Volume = 0.5
+bgSound.Looped = true
+bgSound:Play()
+
+gui.Destroying:Connect(function()
+	bgSound:Stop()
+	bgSound:Destroy()
+end)
+
+-- Particle Effect
+local attachment = Instance.new("Attachment", frame)
+local particle = Instance.new("ParticleEmitter", attachment)
+particle.Texture = "rbxassetid://284205403"
+particle.Lifetime = NumberRange.new(1)
+particle.Rate = 20
+particle.Speed = NumberRange.new(0.5, 1.5)
+particle.Size = NumberSequence.new(0.2)
+particle.Rotation = NumberRange.new(0, 360)
+particle.RotSpeed = NumberRange.new(10, 20)
+particle.Color = ColorSequence.new(Color3.fromRGB(255, 70, 70))
+particle.LightInfluence = 1
+particle.Transparency = NumberSequence.new({
+	NumberSequenceKeypoint.new(0, 0),
+	NumberSequenceKeypoint.new(1, 1)
+})
 
 -- Utility Functions
 local function createLabel(text, posY)
@@ -108,7 +149,7 @@ ypos += 10
 local games = {
 	{"Nexus Hub", "https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"},
 	{"OMG Hub", "https://raw.githubusercontent.com/omgeternalhub/loader/main/loader.lua"},
-	-- List kamu yang sudah bersih dari yang ingin dihapus:
+	-- Game names without scripts
 	"UNIVERSAL MENU", "BEAKS", "BLOX FRUIT", "BLUE LOCK", "ARISE CROSSOVER", "FISCH", "LEGEND OF SPEED", "NINJA LEGENDS",
 	"SURVIVE THE KILLER", "DEAD RAILS", "BROOKHAVEN", "MURDER MYSTERY 2", "THE STRONGEST BATTLEGROUNDS", "MUSCLE LEGENDS",
 	"Doors", "Blade Ball", "Rivals", "A Dusty Trip", "Pets Go", "Arsenal", "3008", "Dead Sails", "CDID",
