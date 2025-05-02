@@ -1,1 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/main/Main.lua"))()
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/refs/heads/main/ChaosLoaderScript"))()
+end)
