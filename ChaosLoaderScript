@@ -4,22 +4,21 @@ local TweenService = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
 local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Blur effect
+-- Blur
 local blur = Instance.new("BlurEffect", Lighting)
 blur.Size = 12
 
--- Main GUI
-local gui = Instance.new("ScreenGui")
+-- GUI
+local gui = Instance.new("ScreenGui", PlayerGui)
 gui.Name = "ChaosLoader"
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
-gui.Parent = PlayerGui
 
 gui.Destroying:Connect(function()
 	if blur then blur:Destroy() end
 end)
 
--- Main Frame
+-- Frame
 local frame = Instance.new("Frame", gui)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.Position = UDim2.new(0.5, 0, 1.5, 0)
@@ -31,12 +30,11 @@ frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Rainbow Border
+-- Rainbow border
 local rainbow = Instance.new("UIStroke", frame)
 rainbow.Thickness = 3
 rainbow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 rainbow.LineJoinMode = Enum.LineJoinMode.Round
-
 task.spawn(function()
 	local h = 0
 	while rainbow and rainbow.Parent do
@@ -46,9 +44,8 @@ task.spawn(function()
 	end
 end)
 
-TweenService:Create(frame, TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-	Position = UDim2.new(0.5, 0, 0.5, 0)
-}):Play()
+-- Animate In
+TweenService:Create(frame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
 
 -- Title
 local title = Instance.new("TextLabel", frame)
@@ -61,16 +58,14 @@ title.TextSize = 26
 title.TextColor3 = Color3.fromRGB(255, 70, 70)
 title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Rainbow Description
+-- Description rainbow
 local desc = Instance.new("TextLabel", frame)
 desc.Size = UDim2.new(1, -20, 0, 22)
 desc.Position = UDim2.new(0, 10, 0, 42)
 desc.BackgroundTransparency = 1
-desc.Text = "THANK YOU FOR USING MY SCRIPT LOADER"
+desc.Text = "Choose your script below"
 desc.Font = Enum.Font.GothamBold
 desc.TextSize = 14
-desc.TextColor3 = Color3.fromHSV(0, 1, 1)
-
 task.spawn(function()
 	local h = 0
 	while desc and desc.Parent do
@@ -80,7 +75,7 @@ task.spawn(function()
 	end
 end)
 
--- Close Button
+-- Close button
 local closeButton = Instance.new("TextButton", frame)
 closeButton.Size = UDim2.new(0, 40, 0, 40)
 closeButton.Position = UDim2.new(1, -45, 0, 5)
@@ -94,25 +89,48 @@ closeButton.MouseButton1Click:Connect(function()
 	gui:Destroy()
 end)
 
--- Search Box
-local searchBox = Instance.new("TextBox", frame)
-searchBox.Size = UDim2.new(1, -20, 0, 26)
-searchBox.Position = UDim2.new(0, 10, 0, 68)
-searchBox.PlaceholderText = "Search script name..."
-searchBox.Text = ""
-searchBox.ClearTextOnFocus = false
-searchBox.Font = Enum.Font.Gotham
-searchBox.TextSize = 14
-searchBox.TextColor3 = Color3.new(1, 1, 1)
-searchBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 6)
+-- Theme Selector (4 pilihan)
+local themes = {
+	Dark = Color3.fromRGB(25, 25, 25),
+	Light = Color3.fromRGB(240, 240, 240),
+	Blue = Color3.fromRGB(40, 60, 100),
+	Rainbow = "Rainbow"
+}
+local themeKeys = {"Dark", "Light", "Blue", "Rainbow"}
+local themeIndex = 1
 
--- Scroll Area
+local themeBtn = Instance.new("TextButton", frame)
+themeBtn.Size = UDim2.new(0, 130, 0, 24)
+themeBtn.Position = UDim2.new(1, -140, 1, -30)
+themeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+themeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+themeBtn.Font = Enum.Font.GothamBold
+themeBtn.TextSize = 14
+themeBtn.Text = "Theme: Dark"
+Instance.new("UICorner", themeBtn).CornerRadius = UDim.new(0, 6)
+
+themeBtn.MouseButton1Click:Connect(function()
+	themeIndex = themeIndex % #themeKeys + 1
+	local sel = themeKeys[themeIndex]
+	themeBtn.Text = "Theme: " .. sel
+	if sel == "Rainbow" then
+		task.spawn(function()
+			while frame and frame.Parent and themeBtn.Text:find("Rainbow") do
+				frame.BackgroundColor3 = Color3.fromHSV(tick() % 5 / 5, 0.7, 1)
+				task.wait(0.05)
+			end
+		end)
+	else
+		frame.BackgroundColor3 = themes[sel]
+	end
+end)
+
+-- Scrolling
 local scrolling = Instance.new("ScrollingFrame", frame)
-scrolling.Size = UDim2.new(1, -20, 1, -105)
-scrolling.Position = UDim2.new(0, 10, 0, 100)
-scrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrolling.Size = UDim2.new(1, -20, 1, -85)
+scrolling.Position = UDim2.new(0, 10, 0, 70)
 scrolling.BackgroundTransparency = 1
+scrolling.CanvasSize = UDim2.new()
 scrolling.ScrollBarThickness = 4
 
 local layout = Instance.new("UIListLayout", scrolling)
@@ -122,13 +140,12 @@ layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	scrolling.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
 end)
 
--- Utility
+-- Rainbow divider
 local function createRainbowDivider()
 	local divider = Instance.new("Frame", scrolling)
 	divider.Size = UDim2.new(1, 0, 0, 2)
 	divider.BackgroundColor3 = Color3.fromHSV(0, 1, 1)
 	divider.BorderSizePixel = 0
-
 	task.spawn(function()
 		local h = 0
 		while divider and divider.Parent do
@@ -139,6 +156,7 @@ local function createRainbowDivider()
 	end)
 end
 
+-- Button maker
 local function createButton(text, callback)
 	local btn = Instance.new("TextButton")
 	btn.Size = UDim2.new(1, 0, 0, 36)
@@ -150,9 +168,9 @@ local function createButton(text, callback)
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 	btn.MouseButton1Click:Connect(callback)
 	btn.Parent = scrolling
-	return btn
 end
 
+-- Script loader
 local function loadScripts(labelText, scriptList)
 	local label = Instance.new("TextLabel", scrolling)
 	label.Size = UDim2.new(1, 0, 0, 24)
@@ -161,98 +179,84 @@ local function loadScripts(labelText, scriptList)
 	label.Font = Enum.Font.GothamBold
 	label.TextSize = 14
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
-
 	createRainbowDivider()
 
 	for _, data in ipairs(scriptList) do
-		local button = createButton(data[1], function()
+		createButton(data[1], function()
 			local runStatus = Instance.new("TextLabel", gui)
 			runStatus.Size = UDim2.new(0, 220, 0, 30)
 			runStatus.Position = UDim2.new(1, -230, 1, -40)
 			runStatus.AnchorPoint = Vector2.new(0, 1)
 			runStatus.BackgroundTransparency = 1
-			runStatus.Text = "SCRIPT IS RUN..."
 			runStatus.Font = Enum.Font.GothamBold
 			runStatus.TextSize = 14
 			runStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
-			TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
-			task.wait(1)
+			runStatus.Text = "Running"
+			runStatus.Parent = gui
+
+			task.spawn(function()
+				while runStatus and runStatus.Parent do
+					for _, d in ipairs({".", "..", "..."}) do
+						runStatus.Text = "Running" .. d
+						task.wait(0.3)
+					end
+				end
+			end)
+
+			local success, err = pcall(function() loadstring(data[2])() end)
+			if not success then warn("Script Error for " .. data[1] .. ": " .. tostring(err)) end
+
 			TweenService:Create(runStatus, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
 			task.delay(0.5, function() runStatus:Destroy() end)
-
-			local success, err = pcall(function()
-				loadstring(data[2])()
-			end)
-			if not success then
-				warn("Script Error for " .. data[1] .. ": " .. tostring(err))
-			end
-
 			gui:Destroy()
-		end)
-
-		-- Filter handler
-		searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-			local query = searchBox.Text:lower()
-			button.Visible = string.find(data[1]:lower(), query or "") ~= nil
 		end)
 	end
 end
 
--- Script List
+-- === Script List ===
 local oneFruitScripts = {
-    {"🍉 Nexus Hub", 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()'},
-    {"🍍 OMG Hub", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()'},
+	{"🍉 Nexus Hub", 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()'},
+	{"🍍 OMG Hub", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()'},
 }
 
 local universalScripts = {
-    {"⚙️ Infinite Yield", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()'},
-    {"💻 CMD-X", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))()'},
-    {"🔍 Dex Explorer", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()'},
-    {"🕵️ Simple Spy", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()'},
-    {"🧪 Remote Spy V2", 'loadstring(game:HttpGet("https://pastebin.com/raw/Caniwq2N"))()'},
-    {"🌑 Dark Dex V4", 'loadstring(game:HttpGet("https://gist.githubusercontent.com/Unknownguy12/f7b10c6c7a0cbfd20a1125bdcf3a9dfd/raw"))()'},
-    {"💤 Anti AFK", [[
-        local vu = game:service'VirtualUser'
-        game:service'Players'.LocalPlayer.Idled:connect(function()
-            vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-            task.wait(1)
-            vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-        end)
-    ]]},
-    {"🦸 FLY GUI", 'loadstring("\108\111...")()'} -- Replace if needed
+	{"⚙️ Infinite Yield", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()'},
+	{"💻 CMD-X", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))()'},
+	{"🔍 Dex Explorer", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()'},
+	{"🕵️ Simple Spy", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()'},
+	{"🧪 Remote Spy V2", 'loadstring(game:HttpGet("https://pastebin.com/raw/Caniwq2N"))()'},
+	{"🌑 Dark Dex V4", 'loadstring(game:HttpGet("https://gist.githubusercontent.com/Unknownguy12/f7b10c6c7a0cbfd20a1125bdcf3a9dfd/raw"))()'},
+	{"💤 Anti AFK", [[local vu = game:service'VirtualUser' game:service'Players'.LocalPlayer.Idled:connect(function() vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame) task.wait(1) vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame) end)]]},
 }
 
 local bloxFruitScripts = {
-    {"THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
-    {"Than Hub Kaitun", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
-    {"Ganteng Hub Basic", 'loadstring(game:HttpGet("https://pastefy.app/ubGPen1y/raw"))()'},
-    {"Ganteng Hub Remake", 'loadstring(game:HttpGet("https://pastefy.app/WHWvHVxz/raw"))()'},
-    {"Redz Hub", 'loadstring(game:HttpGet("https://pastefy.app/KLyLxd0w/raw"))()'},
-    {"Tsuo Hub", 'loadstring(game:HttpGet("https://pastefy.app/mQj6OxHb/raw"))()'},
+	{"THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
 }
 
-local beaksScripts = {
-    {"Mukuro Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/f1jU2QZg"))()'},
-    {"Lunor Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/bAmNTU5Q"))()'},
-    {"Than Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
-    {"Native Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/A0NGW0M1"))()'},
-}
-
--- Tampilkan ke GUI
+-- === Tampilkan ===
 loadScripts("🍎 One Fruit Simulator", oneFruitScripts)
 loadScripts("🌐 UNIVERSAL MENU", universalScripts)
 loadScripts("🍊 Blox Fruit", bloxFruitScripts)
-loadScripts("🐤 Beaks", beaksScripts)
 
--- Label game tambahan (tanpa tombol)
+-- Favorite Auto Load
+local function showFavorites(groups)
+	local favs = {}
+	for _, group in ipairs(groups) do
+		for _, entry in ipairs(group) do
+			if entry[3] then
+				table.insert(favs, {entry[1], entry[2]})
+			end
+		end
+	end
+	if #favs > 0 then loadScripts("⭐ Favorite Scripts", favs) end
+end
+
+showFavorites({oneFruitScripts, universalScripts, bloxFruitScripts})
+
+-- Game Labels
 local gameSections = {
-    "⚡️ LEGEND OF SPEED", "🥷 NINJA LEGENDS", "🔪 SURVIVE THE KILLER", "🚃 DEAD RAILS", "🏡 BROOKHAVEN",
-    "🕵️‍♂️ MURDER MYSTERY 2", "🥊 THE STRONGEST BATTLEGROUNDS", "💪 MUSCLE LEGENDS", "🚪 Doors", "⚔️ Blade Ball",
-    "👥 Rivals", "🚗 A Dusty Trip", "🐾 Pets Go", "🔫 Arsenal", "🏬 3008", "☠️ Dead Sails", "🏗️ CDID",
-    "🚤 Build a Boat for Treasure", "🌞 Sols RNG", "🌪️ Natural Disaster", "🦴 Broken Bone IV",
-    "🥇 Ultimate Battlegrounds", "🚕 Taxi Boss", "👻 Hide or Die", "💪 Arm Wrestle Simulator",
-    "🗡️ Combat Warrior", "🍔 Eat the World", "🧟‍♂️ Zombie Attack", "👑 King Legacy",
-    "🥭 Fruit Battlegrounds", "🏃 Evade"
+	"⚡️ LEGEND OF SPEED", "🥷 NINJA LEGENDS", "🔪 SURVIVE THE KILLER", "🚃 DEAD RAILS", "🏡 BROOKHAVEN",
+	"👥 Rivals", "🏬 3008", "☠️ Dead Sails", "🧟‍♂️ Zombie Attack", "👑 King Legacy"
 }
 
 for _, name in ipairs(gameSections) do
@@ -263,6 +267,15 @@ for _, name in ipairs(gameSections) do
 	label.Font = Enum.Font.GothamBold
 	label.TextSize = 14
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-	createRainbowDivider() 
+	createRainbowDivider()
 end
+
+-- Anti-AFK Always ON
+task.spawn(function()
+	local vu = game:service'VirtualUser'
+	game:service'Players'.LocalPlayer.Idled:connect(function()
+		vu:Button2Down(Vector2.new(), workspace.CurrentCamera.CFrame)
+		task.wait(1)
+		vu:Button2Up(Vector2.new(), workspace.CurrentCamera.CFrame)
+	end)
+end)
