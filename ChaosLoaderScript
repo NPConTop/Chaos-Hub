@@ -213,6 +213,7 @@ local universalScripts = {
 		end)
 	]]},
 	{"🦸 FLY GUI", 'loadstring("\108\111...")()'}
+	{"TESTING", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/NPConTop/Chaos-Hub/main/Main.lua"))()'},
 }
 
 local bloxFruitScripts = {
