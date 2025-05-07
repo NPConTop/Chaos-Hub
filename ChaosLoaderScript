@@ -198,21 +198,21 @@ local oneFruitScripts = {
 }
 
 local universalScripts = {
-	{"⚙️ Infinite Yield", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()'},
-	{"💻 CMD-X", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))()'},
-	{"🔍 Dex Explorer", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()'},
-	{"🕵️ Simple Spy", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()'},
-	{"🧪 Remote Spy V2", 'loadstring(game:HttpGet("https://pastebin.com/raw/Caniwq2N"))()'},
-	{"🌑 Dark Dex V4", 'loadstring(game:HttpGet("https://gist.githubusercontent.com/Unknownguy12/f7b10c6c7a0cbfd20a1125bdcf3a9dfd/raw"))()'},
-	{"💤 Anti AFK", [[
-		local vu = game:service'VirtualUser'
-		game:service'Players'.LocalPlayer.Idled:connect(function()
-			vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-			task.wait(1)
-			vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-		end)
-	]]}
-        {"🦸 Chaos Fly x", 'loadstring(game:HttpGet("https://pastebin.com/raw/33FtUJUq"))()'},
+    {"⚙️ Infinite Yield", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()'},
+    {"💻 CMD-X", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))()'},
+    {"🔍 Dex Explorer", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()'},
+    {"🕵️ Simple Spy", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()'},
+    {"🧪 Remote Spy V2", 'loadstring(game:HttpGet("https://pastebin.com/raw/Caniwq2N"))()'},
+    {"🌑 Dark Dex V4", 'loadstring(game:HttpGet("https://gist.githubusercontent.com/Unknownguy12/f7b10c6c7a0cbfd20a1125bdcf3a9dfd/raw"))()'},
+    {"💤 Anti AFK", [[
+        local vu = game:service'VirtualUser'
+        game:service'Players'.LocalPlayer.Idled:connect(function()
+            vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+        end)
+    ]]},
+    {"🦸 Chaos Fly x", 'loadstring(game:HttpGet("https://pastebin.com/raw/33FtUJUq"))()'},
 }
 
 local bloxFruitScripts = {
@@ -239,11 +239,34 @@ loadScripts("🐤 Beaks", beaksScripts)
 
 -- Game Labels Tanpa Tombol
 local gameSections = {
-	"⚡️ LEGEND OF SPEED", "🥷 NINJA LEGENDS", "🔪 SURVIVE THE KILLER", "🚃 DEAD RAILS", "🏡 BROOKHAVEN",
-	"🕵️‍♂️ MURDER MYSTERY 2", "🥊 THE STRONGEST BATTLEGROUNDS", "💪 MUSCLE LEGENDS", "🚪 Doors", "⚔️ Blade Ball",
-	"👥 Rivals", "🚗 A Dusty Trip", "🐾 Pets Go", "🔫 Arsenal", "🏬 3008", "☠️ Dead Sails", "🏗️ CDID",
-	"🚤 Build a Boat for Treasure", "🌞 Sols RNG", "🌪️ Natural Disaster", "🦴 Broken Bone IV", "🥇 Ultimate Battlegrounds",
-        "🚕 Taxi Boss", "💪 Arm Wrestle Simulator", "🗡️ Combat Warrior", "🍔 Eat the World", "🧟‍♂️ Zombie Attack", "👑 King Legacy",
+    "BLUE LOCK ⚽️",
+    "ARISE CROSSOVER 🔥",
+    "FISCH 🐟",
+    "LEGEND OF SPEED ⚡️",
+    "NINJA LEGENDS 🥷",
+    "SURVIVE THE KILLER 🔪",
+    "DEAD RAILS 🚂",
+    "BROOKHAVEN 🏠",
+    "MURDER MYSTERY 2 🕵️‍♂️",
+    "THE STRONGEST BATTLEGROUNDS 🔥",
+    "MUSCLE LEGENDS 🏋️‍♂️",
+    "Doors 🚪",
+    "Rivals 👊",
+    "A Dusty Trip 🚗",
+    "Pets Go 🐾",
+    "Arsenal 🔫",
+    "3008 ⏰",
+    "Dead Sails 🚣",
+    "CDID 🚗",
+    "Gym League 🏋️‍♂️",
+    "Build a Boat for Treasure 🚣",
+    "Sols RNG 🎲",
+    "Natural Disaster ⛈️",
+    "Taxi Boss 🚕",
+    "Eat the World 🍴",
+    "King Legacy 👑",
+    "Fruit Battlegrounds 🍊",
+    "Evade 🔮"
 }
 
 for _, name in ipairs(gameSections) do
