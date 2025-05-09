@@ -1,0 +1,306 @@
+--===[ CHAOS LOADER MULTI SCRIPT ]===--
+
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
+--===[ Efek Partikel Listrik + Loading Awal ]===--
+
+local ScreenGui = Instance.new("ScreenGui", PlayerGui)
+ScreenGui.Name = "ChaosLoader_Preload"
+
+local LoaderFrame = Instance.new("Frame", ScreenGui)
+LoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+LoaderFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+LoaderFrame.Size = UDim2.new(0, 100, 0, 100)
+LoaderFrame.BackgroundTransparency = 1
+
+local ParticleImage = Instance.new("ImageLabel", LoaderFrame)
+ParticleImage.Size = UDim2.new(2, 0, 2, 0)
+ParticleImage.Position = UDim2.new(-0.5, 0, -0.5, 0)
+ParticleImage.BackgroundTransparency = 1
+ParticleImage.Image = "rbxassetid://6031577364"
+ParticleImage.ImageTransparency = 0
+ParticleImage.ZIndex = 1
+
+spawn(function()
+	while ParticleImage.Parent do
+		ParticleImage.Rotation += 2
+		task.wait(0.01)
+	end
+end)
+
+local LoadingText = Instance.new("TextLabel", LoaderFrame)
+LoadingText.Size = UDim2.new(1, 0, 1, 0)
+LoadingText.BackgroundTransparency = 1
+LoadingText.Text = "Loading Chaos Hub..."
+LoadingText.TextColor3 = Color3.new(1, 1, 1)
+LoadingText.TextStrokeTransparency = 0
+LoadingText.Font = Enum.Font.GothamBold
+LoadingText.TextScaled = true
+LoadingText.ZIndex = 2
+
+--===[ Lanjutkan ke GUI Utama setelah delay ]===--
+
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+task.delay(3, function()
+    -- Fade out
+    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    TweenService:Create(ParticleImage, tweenInfo, {ImageTransparency = 1}):Play()
+    TweenService:Create(LoadingText, tweenInfo, {TextTransparency = 1, TextStrokeTransparency = 1}):Play()
+    task.wait(1.2)
+    ScreenGui:Destroy()
+end)  
+
+	--===[ GUI Utama Chaos Hub ]===--
+
+	local allButtons = {}
+	local blur = Instance.new("BlurEffect", Lighting)
+	blur.Size = 12
+
+	local gui = Instance.new("ScreenGui", PlayerGui)
+	gui.Name = "ChaosLoader"
+	gui.IgnoreGuiInset = true
+	gui.ResetOnSpawn = false
+	gui.Destroying:Connect(function() if blur then blur:Destroy() end end)
+
+	local frame = Instance.new("Frame", gui)
+	frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	frame.Position = UDim2.new(0.5, 0, 1.5, 0)
+	frame.Size = UDim2.new(0, 420, 0, 260)
+	frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	frame.BackgroundTransparency = 0.3
+	frame.BorderSizePixel = 0
+	frame.Active = true
+	frame.Draggable = true
+	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+	local rainbow = Instance.new("UIStroke", frame)
+	rainbow.Thickness = 3
+	rainbow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	rainbow.LineJoinMode = Enum.LineJoinMode.Round
+
+	task.spawn(function()
+		local h = 0
+		while rainbow and rainbow.Parent do
+			h = (h + 0.01) % 1
+			rainbow.Color = ColorSequence.new(Color3.fromHSV(h, 1, 1))
+			task.wait(0.03)
+		end
+	end)
+
+	TweenService:Create(frame, TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0.5, 0, 0.5, 0)
+	}):Play()
+
+	local title = Instance.new("TextLabel", frame)
+	title.Size = UDim2.new(1, -50, 0, 40)
+	title.Position = UDim2.new(0, 10, 0, 5)
+	title.BackgroundTransparency = 1
+	title.Text = "CHAOS MULTI LOADER"
+	title.Font = Enum.Font.FredokaOne
+	title.TextSize = 26
+	title.TextColor3 = Color3.fromRGB(255, 70, 70)
+	title.TextXAlignment = Enum.TextXAlignment.Left
+
+	local desc = Instance.new("TextLabel", frame)
+	desc.Size = UDim2.new(1, -20, 0, 22)
+	desc.Position = UDim2.new(0, 10, 0, 42)
+	desc.BackgroundTransparency = 1
+	desc.Text = "Choose your script below"
+	desc.Font = Enum.Font.GothamBold
+	desc.TextSize = 14
+
+	task.spawn(function()
+		local h = 0
+		while desc and desc.Parent do
+			h = (h + 0.01) % 1
+			desc.TextColor3 = Color3.fromHSV(h, 1, 1)
+			task.wait(0.03)
+		end
+	end)
+
+	local closeButton = Instance.new("TextButton", frame)
+	closeButton.Size = UDim2.new(0, 40, 0, 40)
+	closeButton.Position = UDim2.new(1, -45, 0, 5)
+	closeButton.BackgroundTransparency = 1
+	closeButton.Text = "X"
+	closeButton.Font = Enum.Font.FredokaOne
+	closeButton.TextColor3 = Color3.fromRGB(255, 70, 70)
+	closeButton.TextSize = 24
+	closeButton.ZIndex = 10
+	closeButton.MouseButton1Click:Connect(function() gui:Destroy() end)
+
+	local searchBox = Instance.new("TextBox", frame)
+	searchBox.Size = UDim2.new(1, -20, 0, 26)
+	searchBox.Position = UDim2.new(0, 10, 0, 68)
+	searchBox.PlaceholderText = "Search script..."
+	searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	searchBox.Font = Enum.Font.Gotham
+	searchBox.TextSize = 14
+	Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 6)
+
+	local scrolling = Instance.new("ScrollingFrame", frame)
+	scrolling.Size = UDim2.new(1, -20, 1, -110)
+	scrolling.Position = UDim2.new(0, 10, 0, 100)
+	scrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
+	scrolling.BackgroundTransparency = 1
+	scrolling.ScrollBarThickness = 4
+
+	local layout = Instance.new("UIListLayout", scrolling)
+	layout.Padding = UDim.new(0, 8)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		scrolling.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+	end)
+
+	local function createRainbowDivider()
+		local divider = Instance.new("Frame", scrolling)
+		divider.Size = UDim2.new(1, 0, 0, 2)
+		divider.BackgroundColor3 = Color3.fromHSV(0, 1, 1)
+		divider.BorderSizePixel = 0
+		task.spawn(function()
+			local h = 0
+			while divider and divider.Parent do
+				h = (h + 0.01) % 1
+				divider.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+				task.wait(0.03)
+			end
+		end)
+	end
+
+	local function createButton(text, callback)
+		local btn = Instance.new("TextButton")
+		btn.Size = UDim2.new(1, 0, 0, 36)
+		btn.Text = text
+		btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+		btn.Font = Enum.Font.GothamBold
+		btn.TextSize = 16
+		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+		btn.MouseButton1Click:Connect(callback)
+		btn.Parent = scrolling
+		table.insert(allButtons, btn)
+	end
+
+	local function loadScripts(labelText, scriptList)
+		local label = Instance.new("TextLabel", scrolling)
+		label.Size = UDim2.new(1, 0, 0, 24)
+		label.BackgroundTransparency = 1
+		label.Text = labelText
+		label.Font = Enum.Font.GothamBold
+		label.TextSize = 14
+		label.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+		createRainbowDivider()
+
+		for _, data in ipairs(scriptList) do
+			createButton(data[1], function()
+				loadstring(game:HttpGet(data[2]))()
+			end)
+		end
+	end
+
+	-- Contoh daftar script
+	local oneFruitScripts = {
+	{"🍉 Nexus Hub", 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/86de6d175e585ef6c1c7f4bdebfc57cc.lua"))()'},
+	{"🍍 OMG Hub", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))()'},
+}
+
+local universalScripts = {
+    {"⚙️ Infinite Yield", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()'},
+    {"💻 CMD-X", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))()'},
+    {"🔍 Dex Explorer", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()'},
+    {"🕵️ Simple Spy", 'loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()'},
+    {"🧪 Remote Spy V2", 'loadstring(game:HttpGet("https://pastebin.com/raw/Caniwq2N"))()'},
+    {"🌑 Dark Dex V4", 'loadstring(game:HttpGet("https://gist.githubusercontent.com/Unknownguy12/f7b10c6c7a0cbfd20a1125bdcf3a9dfd/raw"))()'},
+    {"💤 Anti AFK", [[
+        local vu = game:service'VirtualUser'
+        game:service'Players'.LocalPlayer.Idled:connect(function()
+            vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+        end)
+    ]]},
+    {"🦸 Chaos Fly x", 'loadstring(game:HttpGet("https://pastebin.com/raw/33FtUJUq"))()'},
+}
+
+local bloxFruitScripts = {
+	{"THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
+	{"Than Hub Kaitun", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
+	{"Ganteng Hub Basic", 'loadstring(game:HttpGet("https://pastefy.app/ubGPen1y/raw"))()'},
+	{"Ganteng Hub Remake", 'loadstring(game:HttpGet("https://pastefy.app/WHWvHVxz/raw"))()'},
+	{"Redz Hub", 'loadstring(game:HttpGet("https://pastefy.app/KLyLxd0w/raw"))()'},
+	{"Tsuo Hub", 'loadstring(game:HttpGet("https://pastefy.app/mQj6OxHb/raw"))()'},
+}
+
+local beaksScripts = {
+	{"Mukuro Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/f1jU2QZg"))()'},
+	{"Lunor Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/bAmNTU5Q"))()'},
+	{"Than Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
+	{"Native Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/A0NGW0M1"))()'},
+}
+
+-- TAMPILKAN KE GUI
+loadScripts("🍎 One Fruit Simulator", oneFruitScripts)
+loadScripts("🌐 UNIVERSAL MENU", universalScripts)
+loadScripts("🍊 Blox Fruit", bloxFruitScripts)
+loadScripts("🐤 Beaks", beaksScripts)
+
+-- Game Labels Tanpa Tombol
+local gameSections = {
+    "BLUE LOCK ⚽️",
+    "ARISE CROSSOVER 🔥",
+    "FISCH 🐟",
+    "LEGEND OF SPEED ⚡️",
+    "NINJA LEGENDS 🥷",
+    "SURVIVE THE KILLER 🔪",
+    "DEAD RAILS 🚂",
+    "BROOKHAVEN 🏠",
+    "MURDER MYSTERY 2 🕵️‍♂️",
+    "THE STRONGEST BATTLEGROUNDS 🔥",
+    "MUSCLE LEGENDS 🏋️‍♂️",
+    "Doors 🚪",
+    "Rivals 👊",
+    "A Dusty Trip 🚗",
+    "Pets Go 🐾",
+    "Arsenal 🔫",
+    "3008 ⏰",
+    "Dead Sails 🚣",
+    "CDID 🚗",
+    "Gym League 🏋️‍♂️",
+    "Build a Boat for Treasure 🚣",
+    "Sols RNG 🎲",
+    "Natural Disaster ⛈️",
+    "Taxi Boss 🚕",
+    "Eat the World 🍴",
+    "King Legacy 👑",
+    "Fruit Battlegrounds 🍊",
+    "Evade 🔮"
+}
+
+for _, name in ipairs(gameSections) do
+	local label = Instance.new("TextLabel", scrolling)
+	label.Size = UDim2.new(1, 0, 0, 24)
+	label.BackgroundTransparency = 1
+	label.Text = name
+	label.Font = Enum.Font.GothamBold
+	label.TextSize = 14
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.Parent = scrolling
+	createRainbowDivider()
+end
+
+-- SEARCH FILTER
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+	local query = string.lower(searchBox.Text)
+	for _, btn in ipairs(allButtons) do
+		btn.Visible = string.find(string.lower(btn.Text), query) ~= nil
+	end
+end)
