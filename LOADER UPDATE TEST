@@ -232,19 +232,22 @@ local universalScripts = {
 }
 
 local bloxFruitScripts = {
-	{"THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
-	{"Than Hub Kaitun", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
-	{"Ganteng Hub Basic", 'loadstring(game:HttpGet("https://pastefy.app/ubGPen1y/raw"))()'},
-	{"Ganteng Hub Remake", 'loadstring(game:HttpGet("https://pastefy.app/WHWvHVxz/raw"))()'},
-	{"Redz Hub", 'loadstring(game:HttpGet("https://pastefy.app/KLyLxd0w/raw"))()'},
-	{"Tsuo Hub", 'loadstring(game:HttpGet("https://pastefy.app/mQj6OxHb/raw"))()'},
+	{"🌀 THG Hub", 'loadstring(game:HttpGet("https://pastefy.app/fEXb91kF/raw"))()'},
+	{"🌊 Than Hub Kaitun", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
+	{"☯️ Tsuo Hub", 'loadstring(game:HttpGet("https://pastefy.app/mQj6OxHb/raw"))()'},
+	{"🌋 Volcano Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/m2rHYPaa"))()'},
+	{"⌛Quantum Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/DsyKYzQ2"))()'},
+	{"🪐 Zen Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/K2ZcejtA"))()'},
+	{"🕶️ Ganteng Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/rNn1mBR5"))()'},
+	{"🪞 Min Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/b99dMsaH"))()'},
+	{"🔴 Redz Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/PW3bFwvG"))()'},
 }
 
 local beaksScripts = {
-	{"Mukuro Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/f1jU2QZg"))()'},
-	{"Lunor Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/bAmNTU5Q"))()'},
-	{"Than Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
-	{"Native Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/A0NGW0M1"))()'},
+	{"🔗 Mukuro Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/f1jU2QZg"))()'},
+	{"🌕 Lunor Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/bAmNTU5Q"))()'},
+	{"🌊 Than Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/vb0L36u2"))()'},
+	{"🪽 Native Hub", 'loadstring(game:HttpGet("https://pastebin.com/raw/A0NGW0M1"))()'},
 }
 
 -- TAMPILKAN KE GUI
