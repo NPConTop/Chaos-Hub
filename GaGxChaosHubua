@@ -1,0 +1,173 @@
+local TweenService = game:GetService("TweenService")
+local player = game.Players.LocalPlayer
+
+-- GUI setup
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "ChaosHubUI"
+gui.ResetOnSpawn = false
+
+local toggleBtn = Instance.new("ImageButton")
+toggleBtn.Name = "ToggleButton"
+toggleBtn.Parent = gui
+toggleBtn.Size = UDim2.new(0, 40, 0, 40)
+toggleBtn.Position = UDim2.new(0, 660, 0, 10) -- Posisi atas tombol "GARDEN"
+toggleBtn.AnchorPoint = Vector2.new(0, 0)
+toggleBtn.BackgroundTransparency = 1
+ toggleBtn.Image = "rbxassetid://118851733902889" -- ikon gear (built-in roblox UI)
+
+-- Main Frame
+local main = Instance.new("Frame", gui)
+main.Name = "MainFrame"
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.Position = UDim2.new(0.5, 0, 0.5, 0)
+main.Size = UDim2.new(0, 450, 0, 360)
+main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+main.BorderSizePixel = 0
+main.Visible = false
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+
+-- Close Button
+local closeBtn = Instance.new("TextButton", main)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 14
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(1, 0)
+
+-- Logo di atas frame
+local logo = Instance.new("ImageLabel", main)
+logo.Size = UDim2.new(0, 80, 0, 80)
+logo.Position = UDim2.new(0.5, -40, 0, 10)
+logo.BackgroundTransparency = 1
+logo.Image = "rbxassetid://118851733902889"
+
+-- Tab Holder
+local tabHolder = Instance.new("Frame", main)
+tabHolder.Size = UDim2.new(1, 0, 0, 40)
+tabHolder.Position = UDim2.new(0, 0, 0, 100)
+tabHolder.BackgroundTransparency = 1
+
+local tabs = {"Main", "Teleport"}
+local tabButtons = {}
+
+for i, name in ipairs(tabs) do
+    local tab = Instance.new("TextButton", tabHolder)
+    tab.Size = UDim2.new(0, 100, 0, 30)
+    tab.Position = UDim2.new(0, (i - 1) * 110 + 10, 0, 0)
+    tab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tab.Text = name
+    tab.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tab.Font = Enum.Font.GothamBold
+    tab.TextSize = 14
+    Instance.new("UICorner", tab).CornerRadius = UDim.new(0, 8)
+    tabButtons[name] = tab
+end
+
+-- Content Area
+local content = Instance.new("Frame", main)
+content.Position = UDim2.new(0, 0, 0, 140)
+content.Size = UDim2.new(1, 0, 1, -140)
+content.BackgroundTransparency = 1
+
+-- Button Factory
+local function createButton(text, parent, y)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0, 160, 0, 35)
+    btn.Position = UDim2.new(0, 30, 0, y)
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 14
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    return btn
+end
+
+-- Main Tab Content
+local mainContent = Instance.new("Frame", content)
+mainContent.Size = UDim2.new(1, 0, 1, 0)
+mainContent.BackgroundTransparency = 1
+mainContent.Visible = true
+
+local autoSell = createButton("Auto Sell", mainContent, 10)
+local autoPlant = createButton("Auto Tanam", mainContent, 55)
+local autoCollect = createButton("Auto Collect", mainContent, 100)
+
+-- Teleport Tab Content
+local teleportContent = Instance.new("Frame", content)
+teleportContent.Size = UDim2.new(1, 0, 1, 0)
+teleportContent.BackgroundTransparency = 1
+teleportContent.Visible = false
+
+local teleportTargets = {
+    {name = "SELL", position = Vector3.new(61, 2, 0)},
+    {name = "GEAR", position = Vector3.new(-260, 2, -31)},
+    {name = "EGG", position = Vector3.new(-260, 2, -9)},
+    {name = "SEED", position = Vector3.new(61, 2, -27)},
+    {name = "EVENT LUNARGLOW", position = Vector3.new(-99, 4, -3)},
+}
+
+local function teleportTo(pos)
+    local char = player.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char:MoveTo(pos)
+    end
+end
+
+for i, target in ipairs(teleportTargets) do
+    local btn = createButton(target.name, teleportContent, 10 + (i - 1) * 45)
+    btn.MouseButton1Click:Connect(function()
+        teleportTo(target.position)
+    end)
+end
+
+-- Tab Switching
+tabButtons["Main"].MouseButton1Click:Connect(function()
+    mainContent.Visible = true
+    teleportContent.Visible = false
+end)
+
+tabButtons["Teleport"].MouseButton1Click:Connect(function()
+    mainContent.Visible = false
+    teleportContent.Visible = true
+end)
+
+-- Fitur tombol
+autoSell.MouseButton1Click:Connect(function()
+    print("Auto Sell Activated")
+end)
+
+autoPlant.MouseButton1Click:Connect(function()
+    print("Auto Tanam Activated")
+end)
+
+autoCollect.MouseButton1Click:Connect(function()
+    print("Auto Collect Activated")
+end)
+
+-- Close Button Logic
+closeBtn.MouseButton1Click:Connect(function()
+    local tween = TweenService:Create(main, TweenInfo.new(0.3), {Size = UDim2.new(0, 0, 0, 0), Transparency = 1})
+    tween:Play()
+    tween.Completed:Wait()
+    main.Visible = false
+end)
+
+-- Toggle Button Logic
+toggleBtn.MouseButton1Click:Connect(function()
+    if main.Visible then
+        local tween = TweenService:Create(main, TweenInfo.new(0.3), {Size = UDim2.new(0, 0, 0, 0), Transparency = 1})
+        tween:Play()
+        tween.Completed:Wait()
+        main.Visible = false
+    else
+        main.Visible = true
+        main.Size = UDim2.new(0, 0, 0, 0)
+        main.Transparency = 1
+        local tween = TweenService:Create(main, TweenInfo.new(0.3), {Size = UDim2.new(0, 450, 0, 360), Transparency = 0})
+        tween:Play()
+    end
+end)
