@@ -7,13 +7,13 @@ gui.Name = "ChaosHubUI"
 gui.ResetOnSpawn = false
 
 local toggleBtn = Instance.new("ImageButton")
-toggleBtn.Name = "ToggleButton"
+toggleBtn.Name = "OPEN/CLOSE"
 toggleBtn.Parent = gui
 toggleBtn.Size = UDim2.new(0, 40, 0, 40)
 toggleBtn.Position = UDim2.new(0, 660, 0, 10) -- Posisi atas tombol "GARDEN"
 toggleBtn.AnchorPoint = Vector2.new(0, 0)
 toggleBtn.BackgroundTransparency = 1
- toggleBtn.Image = "rbxassetid://118851733902889" -- ikon gear (built-in roblox UI)
+ toggleBtn.Image = "rbxassetid://86077435914453" -- ikon gear (built-in roblox UI)
 
 -- Main Frame
 local main = Instance.new("Frame", gui)
@@ -42,7 +42,7 @@ local logo = Instance.new("ImageLabel", main)
 logo.Size = UDim2.new(0, 80, 0, 80)
 logo.Position = UDim2.new(0.5, -40, 0, 10)
 logo.BackgroundTransparency = 1
-logo.Image = "rbxassetid://118851733902889"
+logo.Image = "rbxassetid://86077435914453"
 
 -- Tab Holder
 local tabHolder = Instance.new("Frame", main)
